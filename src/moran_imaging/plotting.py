@@ -3,7 +3,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from .local_global_spatial_autocorrelation import *
-from matplotlib.collections import LineCollection
 from matplotlib.colors import ListedColormap
 
 
