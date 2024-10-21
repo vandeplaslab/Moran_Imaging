@@ -32,7 +32,7 @@ For academic publications, please use the following Bibtex entry:
 	}
 
 
-### Figure reproduction
+### Tutorials
 
 The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spectrometry: A Spatial Perspective" by Leonore Tideman, Lukasz G. Migas, Katerina V. Djambazova, Jacquelyn Spathies, Jeffrey M. Spraggins, and Raf Van de Plas (2024). Follow our instructions to reproduce our results. 
 
