@@ -16,7 +16,7 @@ You can install Moran_Imaging, with its mandatory dependencies, from PyPI:
 pip install Moran_Imaging
 ```
 
-Moran_Imaging supports Python version 3.8 and above. Its mandatory dependencies are `jupyterlab`, `h5py`, `joblib`, `seaborn`, `matplotlib`, `numba`, `numpy`, `pandas`, `scikit-image`, `scikit-learn`, `scipy`, `torch`, `tqdm`, and `umap-learn`. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
+Our package supports Python version 3.8 and above. Its mandatory dependencies are `jupyterlab`, `h5py`, `joblib`, `seaborn`, `matplotlib`, `numba`, `numpy`, `pandas`, `scikit-image`, `scikit-learn`, `scipy`, `torch`, `tqdm`, and `umap-learn`. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
 
 ### Citation
