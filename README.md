@@ -38,9 +38,9 @@ The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spe
 
 1. Install the Moran_Imaging package from PyPI.
 
-```bash
-pip install Moran_Imaging
-```
+        ```bash
+        pip install Moran_Imaging
+        ```
 
 3. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_PCA_dataset.pickle. **provide link to zenodo**
 
