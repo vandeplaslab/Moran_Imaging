@@ -1,0 +1,21 @@
+{
+  "template": "https://github.com/lukasz-migas/pyrepo-cookiecutter",
+  "commit": "9e8846a8e903e5785d948b600e03926581befe83",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "full_name": "Leonore Tideman",
+      "email": "leonoortideman@gmail.com",
+      "github_username": "LEMTideman",
+      "project_name": "Moran_Imaging",
+      "project_slug": "moran_imaging",
+      "project_short_description": "Spatial analysis of molecular imaging data: spatial dependence and heterogeneity statistics, spatial segmentation, spatial clustering.",
+      "pypi_username": "LEMTideman",
+      "_copy_without_render": [
+        ".github/workflows/*"
+      ],
+      "_template": "https://github.com/lukasz-migas/pyrepo-cookiecutter"
+    }
+  },
+  "directory": null
+}
