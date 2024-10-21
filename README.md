@@ -8,7 +8,7 @@
 
 Spatial analysis of molecular imaging data: spatial dependence and heterogeneity statistics, spatial segmentation, spatial clustering.
 
-### Installation from PyPI
+### Installation
 
 You can install Moran_Imaging from PyPI:
 
