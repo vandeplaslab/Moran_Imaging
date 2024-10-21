@@ -1,13 +1,16 @@
 # Local and global spatial autocorrelation
 
 import numpy as np
-from .centralized_conditional_randomization_engine import *
-from .spatial_weights_matrix import *
+
+from moran_imaging.centralized_conditional_randomization_engine import *
+from moran_imaging.spatial_weights_matrix import *
 
 
 def lag_spatial(W, y):
     """
-    Spatial lag operator. If W is row-standardized, compute the weighted mean of each observation's neighbors. If not, compute the weighted sum of each observation's neighbors.
+    Spatial lag operator. If W is row-standardized, compute the weighted mean of each observation's neighbors.
+
+     If not, compute the weighted sum of each observation's neighbors.
 
     Inputs
     ----------
@@ -23,7 +26,7 @@ def lag_spatial(W, y):
     return Wy
 
 
-class Moran_Local:
+class MoranLocal:
     """Local Moran's I statistics.
 
     Parameters
@@ -62,7 +65,6 @@ class Moran_Local:
     """
 
     def __init__(self, ion_image, W, background_mask, num_permute=999, significance_test=False, num_jobs=-1):
-
         # Flatten ion image and perform mean-centering (excluding background pixels)
         ion_image_flat = np.asarray(ion_image).flatten()
         if len(background_mask) == 0:
@@ -73,13 +75,14 @@ class Moran_Local:
             z[background_mask] = 0
 
         # Compute local Moran's I statistics
-        self.Moran_I_local = self._compute_local_Moran_I(W, z)
+        self.Moran_I_local = self._compute_local_moran_i(W, z)
 
         # Assign each pixel to a quadrant of the Moran scatterplot
         self.quadrant = self._determine_scatterplot_quadrant(W, z, [1, 2, 3, 4])
 
-        if significance_test == True:
-            # Simulate spatial randomness by computing the local Moran's I statistics corresponding to random permutations of the image
+        if significance_test is True:
+            # Simulate spatial randomness by computing the local Moran's I statistics corresponding to random
+            # permutations of the image
             # Numba-accelerated parallelized conditional randomization
             _, rlisas = crand(
                 z,
@@ -106,7 +109,7 @@ class Moran_Local:
             self.VI_sim = self.seI_sim * self.seI_sim
             self.z_sim = (self.Moran_I_local - self.EI_sim) / (self.seI_sim + 1e-12)
 
-    def _compute_local_Moran_I(self, W, z):
+    def _compute_local_moran_i(self, W, z):
         z_lag = lag_spatial(W, z)
         numerator = z * z_lag
         denominator = (z * z).sum()
@@ -125,7 +128,7 @@ class Moran_Local:
         return q
 
 
-class Moran_Global:
+class MoranGlobal:
     """Global Moran's I statistics.
 
     Parameters
@@ -172,10 +175,11 @@ class Moran_Global:
         factor = (W.n - len(W.islands)) / W.s0
 
         # Compute global Moran's I
-        self.Moran_I_global = self._compute_global_Moran_I(z, W, factor)
+        self.Moran_I_global = self._compute_global_moran_i(z, W, factor)
 
-        # Simulate spatial randomness by computing the global Moran's I statistics corresponding to random permutations of the image
-        sim = [self._compute_global_Moran_I(np.random.permutation(z), W, factor) for i in range(num_permute)]
+        # Simulate spatial randomness by computing the global Moran's I statistics corresponding to random permutations
+        # of the image
+        sim = [self._compute_global_moran_i(np.random.permutation(z), W, factor) for i in range(num_permute)]
         self.sim = np.array(sim)
 
         # Compute pseudo p-values for assessing the significance of global spatial autocorrelation statistics
@@ -191,7 +195,7 @@ class Moran_Global:
         self.VI_sim = self.seI_sim**2
         self.z_sim = (self.Moran_I_global - self.EI_sim) / (self.seI_sim + 1e-12)
 
-    def _compute_global_Moran_I(self, z, W, factor):
+    def _compute_global_moran_i(self, z, W, factor):
         z_lag = lag_spatial(W, z)
         inum = (z * z_lag).sum()
         z2ss = (z * z).sum()
@@ -199,7 +203,7 @@ class Moran_Global:
         return I
 
 
-class Geary_Global:
+class GearyGlobal:
     """Global Geary's c statistics.
 
     Parameters
@@ -233,10 +237,11 @@ class Geary_Global:
         y = np.asarray(y).flatten()
 
         # Compute global Geary's c
-        self.Geary_c_global = self._compute_global_Geary_c(y, W)
+        self.Geary_c_global = self._compute_global_geary_c(y, W)
 
-        # Simulate spatial randomness by computing the global Moran's I statistics corresponding to random permutations of the image
-        sim = [self._compute_global_Geary_c(np.random.permutation(y), W) for i in range(num_permute)]
+        # Simulate spatial randomness by computing the global Moran's I statistics corresponding to random permutations
+        # of the image
+        sim = [self._compute_global_geary_c(np.random.permutation(y), W) for i in range(num_permute)]
         self.sim = np.array(sim)
 
         # Compute pseudo p-values for assessing the significance of global spatial autocorrelation statistics
@@ -252,7 +257,7 @@ class Geary_Global:
         self.VC_sim = self.seC_sim**2
         self.z_sim = (self.Geary_c_global - self.EC_sim) / (self.seC_sim + 1e-12)
 
-    def _compute_global_Geary_c(self, y, W):
+    def _compute_global_geary_c(self, y, W):
         # Numerator
         focal_ix, neighbor_ix = W.sparse.nonzero()
         numerator = (W.sparse.data * ((y[focal_ix] - y[neighbor_ix]) ** 2)).sum()
@@ -263,3 +268,9 @@ class Geary_Global:
         denominator = sum(z * z) * W.s0 * 2.0
 
         return numerator / denominator
+
+
+# Kept for backward compatibility
+Moran_Local = MoranLocal
+Moran_Global = MoranGlobal
+Geary_Global = GearyGlobal

@@ -29,7 +29,6 @@ def run_knn(features, k=10):
 def pseudo_labeling(
     ub: float, lb: float, sim: torch.tensor, index, knn: bool, knn_adj=None
 ) -> Tuple[torch.tensor, torch.tensor]:
-
     pos_loc = (sim >= ub).astype("float64")
     neg_loc = (sim <= lb).astype("float64")
 

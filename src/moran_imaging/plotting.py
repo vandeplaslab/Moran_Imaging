@@ -2,8 +2,9 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from .local_global_spatial_autocorrelation import *
 from matplotlib.colors import ListedColormap
+
+from moran_imaging.local_global_spatial_autocorrelation import *
 
 
 def position_discrete_colorbar_ticks(min_tick, num_ticks):
@@ -12,9 +13,9 @@ def position_discrete_colorbar_ticks(min_tick, num_ticks):
     """
     step = 1 / (2 * num_ticks)
     tick_location = [step]
-    for index in range(0, num_ticks - 1):
+    for _index in range(0, num_ticks - 1):
         tick_location.append(tick_location[-1] + 2 * step)
-    tick_location = list(map(lambda x: min_tick + (num_ticks - 1) * x, tick_location))
+    tick_location = [min_tick + (num_ticks - 1) * x for x in tick_location]
 
     return np.round(tick_location, 5)
 
@@ -43,7 +44,7 @@ def plot_moran_local_scatterplot(
     moran_local, W, background_mask, ion_image, mz, p=None, colormap=None, axes=None, with_colorbar=True
 ):
     """
-    Moran Scatterplot with option of coloring of Local Moran Statistics
+    Moran Scatterplot with option of coloring of Local Moran Statistics.
 
     Inputs
     ----------
@@ -74,14 +75,11 @@ def plot_moran_local_scatterplot(
     mean_spatial_lag : mean spatial lag
     """
     # Check for off-tissue pixels (background mask)
-    if len(background_mask) == 0:
-        remove_background = False
-    else:
-        remove_background = True
+    remove_background = len(background_mask) != 0
 
     # Flatten ion image and perform mean-centering
     # Exclude background pixels from mean calculation if applicable
-    if remove_background == False:
+    if remove_background is False:
         y = np.asarray(ion_image).flatten()
         y_mean = y.mean()
     else:
@@ -92,7 +90,7 @@ def plot_moran_local_scatterplot(
 
     # Define the colormap of the scatterplot quadrants
     spots = moran_hot_cold_spots(moran_local, p)
-    if colormap == None:
+    if colormap is None:
         colormap = ListedColormap(["#fb485e", "#91dff6", "#5353ea", "#ffa6d9"])
     if (p is None) or (0 not in spots):
         hmap = colormap
@@ -104,7 +102,7 @@ def plot_moran_local_scatterplot(
         ]
         tick_loc = position_discrete_colorbar_ticks(1, 4)
     else:
-        hmap = ["#bababa"] + colormap
+        hmap = ["#bababa", *colormap]
         tick_labels = [
             "Non-significant spatial autocorrelation",
             "High attribute and high spatial lag",
@@ -115,14 +113,14 @@ def plot_moran_local_scatterplot(
         tick_loc = position_discrete_colorbar_ticks(0, 5)
 
     # Parameters for plotting the scatter points and the linear regression line
-    scatter_kwds = dict()
-    fitline_kwds = dict()
+    scatter_kwds = {}
+    fitline_kwds = {}
     scatter_kwds.setdefault("alpha", 0.6)
     scatter_kwds.setdefault("s", 40)
     fitline_kwds.setdefault("alpha", 0.9)
 
     # Create Matplotlib figure and axes
-    if axes == None:
+    if axes is None:
         fig, axes = plt.subplots(figsize=(7, 7), dpi=100)
 
     # Set figure labels and title
@@ -160,7 +158,7 @@ def plot_moran_local_scatterplot(
     fitline_kwds.setdefault("color", "k")
     scatter_kwds.setdefault("cmap", hmap)
 
-    if remove_background == False:
+    if remove_background is False:
         scatter_kwds.setdefault("c", spots)
         image_scatter = axes.scatter(y, lag, **scatter_kwds)
         axes.plot(y_mean + y, mean_spatial_lag + slope * y, linewidth=2, **fitline_kwds)
@@ -173,7 +171,7 @@ def plot_moran_local_scatterplot(
         axes.plot(y_mean + y_no_background, mean_spatial_lag + slope * y_no_background, linewidth=2, **fitline_kwds)
 
     # Colorbar
-    if with_colorbar == True:
+    if with_colorbar is True:
         divider = make_axes_locatable(axes)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cbar = fig.colorbar(image_scatter, cax, ticks=tick_loc)
