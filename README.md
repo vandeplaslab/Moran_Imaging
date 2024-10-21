@@ -18,7 +18,7 @@ pip install Moran_Imaging
 
 ### Citation
 
-If you reuse our code, please cite our paper **provide link to preprint**. 
+If you reuse our code, please cite our work **provide link to preprint**. 
 For academic publications, please use the following Bibtex entry:
 
 **Insert a bibtex-like citation hereunder**
