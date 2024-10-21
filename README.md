@@ -46,8 +46,10 @@ The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spe
 
 7. Define two subfolders: one subfolder should be called Data and the other should be called Figures. Save the three datasets in the Data subfolder and leave the Figures subfolder empty.
    
-9. Open the JupyterLab interactive development environment, and run the three following Jupyter notebooks. Run the Demo_notebook_exploratory_analysis.ipynb notebook to reproduce figures 3, 4, 5, 6, S1 and S2. Run the Demo_notebook_segmentation.ipynb notebook to reproduce figures 7, 8, and 9. Run the Demo_notebook_clustering.ipynb notebook to reproduce Figure 12, S3, S4, S5, S6, S7, S8, S9, and S10. Please note that running the deep clustering section of the Demo_notebook_clustering.ipynb notebook may be time-consuming.
+9. Open the JupyterLab interactive development environment, and run the three following Jupyter notebooks.
 
         jupyter lab Demo_notebook_exploratory_analysis.ipynb 
         jupyter lab Demo_notebook_segmentation.ipynb
         jupyter lab Demo_notebook_clustering.ipynb
+
+Run the Demo_notebook_exploratory_analysis.ipynb notebook to reproduce figures 3, 4, 5, 6, S1 and S2. Run the Demo_notebook_segmentation.ipynb notebook to reproduce figures 7, 8, and 9. Run the Demo_notebook_clustering.ipynb notebook to reproduce Figure 12, S3, S4, S5, S6, S7, S8, S9, and S10. Please note that running the deep clustering section of the Demo_notebook_clustering.ipynb notebook may be time-consuming.
