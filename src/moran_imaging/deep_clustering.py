@@ -1,4 +1,4 @@
-# Deep clustering
+"""Deep clustering"""
 
 # Paper: "A noise-robust deep clustering of biomolecular ions improves interpretability of mass spectrometric images"
 # by Dan Guo, Melanie Christine Föll, Kylie Ariel Bemis, Olga Vitek. 2023, Bioinformatics,
@@ -14,8 +14,8 @@ import numpy as np
 import torch
 import torch.nn.functional as functional
 
-from moran_imaging.CAE import CAE
-from moran_imaging.cnnClust import CNNClust
+from moran_imaging.cae import CAE
+from moran_imaging.cnn_clustering import CNNClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
 
 
@@ -27,14 +27,14 @@ class DeepClustering:
         ims_dataset,
         acquisition_mask,
         image_shape,
-        num_cluster=5,
+        num_cluster: int = 5,
         label_path=None,
-        lr=0.0001,
-        batch_size=128,
-        knn=True,
-        k=10,
-        use_gpu=True,
-        random_seed=0,
+        lr: float = 0.0001,
+        batch_size: int = 128,
+        kn: bool = True,
+        k: int = 10,
+        use_gpu: bool = True,
+        random_seed: int = 0,
     ):
         super().__init__()
 
@@ -214,14 +214,13 @@ class DeepClustering:
 
             return pred_label
 
-    def reshape_image(self, data, background_mask):
+    def reshape_image(self, data: np.ndarray, background_mask: np.ndarray) -> np.ndarray:
         # Fill background pixels with zeros (default) or NaN
         pixel_grid = np.zeros((self.height * self.width,))
         pixel_grid[np.invert(background_mask)] = data
 
         # Reshape data
-        image = np.reshape(pixel_grid, [self.height, self.width])
-        return image
+        return np.reshape(pixel_grid, [self.height, self.width])
 
 
 # Kept for backward compatibility

@@ -2,6 +2,7 @@
 # Numba-accelerated code for conditional randomization.
 # Adapted from from the centralized conditional randomisation engine of Exploratory Spatial Data Analysis (ESDA).
 # See https://github.com/pysal/esda/blob/master/esda/crand.py
+from __future__ import annotations
 
 import os
 import warnings
@@ -56,7 +57,7 @@ def crand(
     n_jobs,
     stat_func,
     scaling=None,
-    seed=None,
+    seed: int | None = None,
     island_weight=0,
 ):
     """
@@ -118,7 +119,8 @@ def crand(
     if seed is None:
         seed = np.random.randint(12345, 12345000)
 
-    # we need to be careful to shuffle only *other* sites, not the self-site. This means we need to extract the self-weight, if any
+    # we need to be careful to shuffle only *other* sites, not the self-site. This means we need to extract the
+    # self-weight, if any
     self_weights = adj_matrix.diagonal()
     # force the self-site weight to zero
     with warnings.catch_warnings():
@@ -129,7 +131,8 @@ def crand(
     # extract the weights from a now no-self-weighted adj_matrix
     other_weights = adj_matrix.data
     # use the non-self weight as the cardinality, since this is the set we have to randomize.
-    # if there is a self-neighbor, we need to *not* shuffle the self neighbor, since conditional randomization conditions on site i.
+    # if there is a self-neighbor, we need to *not* shuffle the self neighbor, since conditional randomization
+    # conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     permuted_ids = vec_permutations(max_card, n, permutations, seed)

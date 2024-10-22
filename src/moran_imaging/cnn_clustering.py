@@ -1,17 +1,22 @@
+"""CNN clustering."""
+
+import torch
 import torch.nn as nn
 
-from moran_imaging.CAE import conv2d_hwout
+from moran_imaging.cae import conv2d_hwout
 
 
 class CNNClust(nn.Module):
-    def __init__(self, num_clust, height, width):
+    def __init__(self, num_clust: int, height: int, width: int):
         super().__init__()
         self.num_clust = num_clust
         self.height = height
         self.width = width
 
         self.conv1 = nn.Sequential(
-            nn.Conv2d(1, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False), nn.BatchNorm2d(1), nn.ReLU()
+            nn.Conv2d(1, 1, kernel_size=(7, 7), stride=(1, 1), padding=(3, 3), bias=False),
+            nn.BatchNorm2d(1),
+            nn.ReLU(),
         )
 
         self.conv2 = nn.Sequential(
@@ -24,11 +29,15 @@ class CNNClust(nn.Module):
         )
 
         self.conv3 = nn.Sequential(
-            nn.Conv2d(8, 8, kernel_size=(2, 2), stride=(1, 1), bias=False), nn.BatchNorm2d(8), nn.ReLU()
+            nn.Conv2d(8, 8, kernel_size=(2, 2), stride=(1, 1), bias=False),
+            nn.BatchNorm2d(8),
+            nn.ReLU(),
         )
 
         self.conv4 = nn.Sequential(
-            nn.Conv2d(8, 16, kernel_size=(3, 3), stride=(1, 1), bias=False), nn.BatchNorm2d(16), nn.ReLU()
+            nn.Conv2d(8, 16, kernel_size=(3, 3), stride=(1, 1), bias=False),
+            nn.BatchNorm2d(16),
+            nn.ReLU(),
         )
 
         self.conv5 = nn.Sequential(
@@ -41,7 +50,9 @@ class CNNClust(nn.Module):
         )
 
         self.conv6 = nn.Sequential(
-            nn.Conv2d(16, 1, kernel_size=(3, 3), stride=(1, 1), bias=False), nn.BatchNorm2d(1), nn.ReLU()
+            nn.Conv2d(16, 1, kernel_size=(3, 3), stride=(1, 1), bias=False),
+            nn.BatchNorm2d(1),
+            nn.ReLU(),
         )
 
         # Computing dimensions for linear layer
@@ -70,10 +81,13 @@ class CNNClust(nn.Module):
         self.final_conv_dim = l6h * l6w
 
         self.fc = nn.Sequential(
-            nn.Linear(self.final_conv_dim, num_clust), nn.BatchNorm1d(num_clust, momentum=0.01), nn.Softmax(dim=1)
+            nn.Linear(self.final_conv_dim, num_clust),
+            nn.BatchNorm1d(num_clust, momentum=0.01),
+            nn.Softmax(dim=1),
         )
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        """Forward pass."""
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
@@ -82,7 +96,6 @@ class CNNClust(nn.Module):
         x = self.conv6(x)
         x = x.view(-1, self.final_conv_dim)
         x = self.fc(x)
-
         return x
 
 

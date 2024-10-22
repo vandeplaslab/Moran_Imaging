@@ -1,3 +1,7 @@
+"""Moran-HOG-Spatial Clustering (MHSClustering) is a class that performs clustering on a dataset of ion images."""
+
+from __future__ import annotations
+
 import numpy as np
 from skimage.feature import hog
 from sklearn.cluster import HDBSCAN, KMeans
@@ -15,23 +19,26 @@ class MHSClustering:
     using a combination of Moran's I, Histogram of Oriented Gradients (HOG), and spatial clustering.
     """
 
+    # Attributes
+    labels: np.ndarray | None = None
+
     def __init__(
         self,
         dataset,
         acquisition_mask,
-        image_shape,
-        neighborhood_size=5,
-        HOG_orientations=8,
-        HOG_pixels_per_cell=(16, 16),
-        HOG_cells_per_block=(1, 1),
-        HOG_visualize=False,
-        random_seed=0,
+        image_shape: tuple[int, int],
+        neighborhood_size: int = 5,
+        hog_orientations: int = 8,
+        hog_pixels_per_cell: tuple[int, int] = (16, 16),
+        hog_cells_per_block: tuple[int, int] = (1, 1),
+        hog_visualize: bool = False,
+        random_seed: int = 0,
     ):
         self.random_seed = random_seed
         self.image_shape = image_shape
-        self.orientations = HOG_orientations
-        self.pixels_per_cell = HOG_pixels_per_cell
-        self.cells_per_block = HOG_cells_per_block
+        self.orientations = hog_orientations
+        self.pixels_per_cell = hog_pixels_per_cell
+        self.cells_per_block = hog_cells_per_block
 
         # Define the spatial weights matrix
         background_mask = np.invert(acquisition_mask)
@@ -41,36 +48,40 @@ class MHSClustering:
         weights_matrix.transform = "r"
 
         # Compute the Moran quadrant maps
-        Moran_quadrants = np.zeros((image_shape[0] * image_shape[1], dataset.shape[1])).astype(np.float32)
+        moran_quadrants = np.zeros((image_shape[0] * image_shape[1], dataset.shape[1])).astype(np.float32)
         for mz_index in range(dataset.shape[1]):
             ion_image_with_background = self.reshape_image(dataset[:, mz_index], background_mask)
-            local_Moran_object = MoranLocal(
+            local_moran_object = MoranLocal(
                 ion_image_with_background.astype(np.float32),
                 weights_matrix,
                 background_mask,
                 num_permute=999,
                 num_jobs=-1,
             )
-            Moran_quadrants_ion_image = local_Moran_object.quadrant.astype(np.float32)
-            Moran_quadrants[:, mz_index] = Moran_quadrants_ion_image
-        self.Moran_quadrants = Moran_quadrants
+            moran_quadrants_ion_image = local_moran_object.quadrant.astype(np.float32)
+            moran_quadrants[:, mz_index] = moran_quadrants_ion_image
+        self.Moran_quadrants = moran_quadrants
 
         # Compute the Histogram of Oriented Gradients (HOG)
-        if HOG_visualize is True:
+        if hog_visualize is True:
             self.Moran_quadrants_HOG_features, self.Moran_quadrants_HOG_images = self.extract_hog_features(
-                Moran_quadrants
+                moran_quadrants
             )
         else:
-            self.Moran_quadrants_HOG_features, _ = self.extract_hog_features(Moran_quadrants)
+            self.Moran_quadrants_HOG_features, _ = self.extract_hog_features(moran_quadrants)
 
-    def reshape_image(self, data, background_mask):
+    def reshape_image(self, data: np.ndarray, background_mask: np.ndarray) -> np.ndarray:
+        """Reshape a 1D array of data into a 2D image using a background mask."""
         pixel_grid = np.zeros((self.image_shape[0] * self.image_shape[1],))
         pixel_grid[np.invert(background_mask)] = data
         image = np.reshape(pixel_grid, self.image_shape)
         return image
 
-    def extract_hog_features(self, dataset):
-        """Extract Histogram of Oriented Gradients (HOG) features from a 2D array where each row represents a flattened image."""
+    def extract_hog_features(self, dataset: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Extract Histogram of Oriented Gradients (HOG) features from a 2D array.
+
+        Each row represents a flattened image.
+        """
         # Transpose so that each row is a flattened image
         dataset = dataset.transpose()
 
@@ -97,7 +108,8 @@ class MHSClustering:
         # Return all HOG features as a 2D array where each row is a feature vector for an image
         return np.array(total_hog_features), np.array(total_hog_images)
 
-    def clustering_k_means(self, num_clusters):
+    def clustering_k_means(self, num_clusters: int) -> np.ndarray:
+        """Perform clustering using k-means on the HOG features."""
         # Mean-centering and unit-variance scaling
         scaler_model = StandardScaler(with_mean=True, with_std=True)
         hog_features = scaler_model.fit_transform(self.Moran_quadrants_HOG_features)
@@ -106,21 +118,20 @@ class MHSClustering:
         kmeans_model = KMeans(n_clusters=num_clusters, n_init=50, random_state=self.random_seed)
         kmeans_model.fit(hog_features)
         self.labels = kmeans_model.labels_
-
         return self.labels
 
-    def clustering_hdbscan(self, min_cluster_size, max_cluster_size):
+    def clustering_hdbscan(self, min_cluster_size: int, max_cluster_size: int) -> np.ndarray:
+        """Perform clustering using HDBSCAN on the HOG features."""
         # Non-linear dimensionality reduction with UMAP
-        UMAP_model = UMAP(n_neighbors=min_cluster_size, n_components=5, metric="euclidean", init="pca")
-        hog_features = UMAP_model.fit_transform(self.Moran_quadrants_HOG_features)
+        umap_model = UMAP(n_neighbors=min_cluster_size, n_components=5, metric="euclidean", init="pca")
+        hog_features = umap_model.fit_transform(self.Moran_quadrants_HOG_features)
 
         # HDBSCAN clustering
-        HDBSCAN_model = HDBSCAN(
+        hdbscan_model = HDBSCAN(
             min_cluster_size=min_cluster_size, max_cluster_size=max_cluster_size, metric="euclidean", n_jobs=-1
         )
-        HDBSCAN_model.fit(hog_features)
-        self.labels = HDBSCAN_model.labels_
-
+        hdbscan_model.fit(hog_features)
+        self.labels = hdbscan_model.labels_
         return self.labels
 
 

@@ -1,34 +1,55 @@
+"""CAE model."""
+
 import math
 
+import torch
 import torch.nn as nn
 import torch.nn.functional as functional
 
 
-def conv2d_hout(height, padding, dilation, kernel_size, stride):
+def conv2d_hout(
+    height: int,
+    padding: tuple[int, int],
+    dilation: tuple[int, int],
+    kernel_size: tuple[int, int],
+    stride: tuple[int, int],
+) -> int:
     tmp = math.floor(((height + 2 * padding[0] - dilation[0] * (kernel_size[0] - 1) - 1) / stride[0]) + 1)
     return 1 if tmp < 1 else tmp
 
 
-def conv2d_wout(width, padding, dilation, kernel_size, stride):
+def conv2d_wout(
+    width: int,
+    padding: tuple[int, int],
+    dilation: tuple[int, int],
+    kernel_size: tuple[int, int],
+    stride: tuple[int, int],
+) -> int:
     tmp = math.floor(((width + 2 * padding[1] - dilation[1] * (kernel_size[1] - 1) - 1) / stride[1]) + 1)
     return 1 if tmp < 1 else tmp
 
 
-def conv2d_hwout(height, width, padding, dilation, kernel_size, stride):
+def conv2d_hwout(
+    height: int,
+    width: int,
+    padding: tuple[int, int],
+    dilation: tuple[int, int],
+    kernel_size: tuple[int, int],
+    stride: tuple[int, int],
+) -> tuple[int, int]:
     h = math.floor(((height + 2 * padding[0] - dilation[0] * (kernel_size[0] - 1) - 1) / stride[0]) + 1)
     h = 1 if h < 1 else h
     w = math.floor(((width + 2 * padding[1] - dilation[1] * (kernel_size[1] - 1) - 1) / stride[1]) + 1)
     w = 1 if w < 1 else w
-
     return h, w
 
 
 class CAE(nn.Module):
     def __init__(
         self,
-        height,
-        width,
-        train_mode=True,
+        height: int,
+        width: int,
+        train_mode: bool = True,
     ):
         super().__init__()
         self.train_mode = train_mode
@@ -89,26 +110,26 @@ class CAE(nn.Module):
         self.tbn2 = nn.BatchNorm2d(1, momentum=0.01)
         self.trelu2 = nn.ReLU()
 
-    def convtrans1(self, x, output_size):
+    def convtrans1(self, x: torch.Tensor, output_size: tuple[int, int]) -> torch.Tensor:
         x = self.ct1(x, output_size=output_size)
         x = self.tbn1(x)
         x = self.trelu1(x)
         return x
 
-    def convtrans2(self, x, output_size):
+    def convtrans2(self, x: torch.Tensor, output_size: tuple[int, int]) -> torch.Tensor:
         x = self.ct2(x, output_size=output_size)
         x = self.tbn2(x)
         x = self.trelu2(x)
         return x
 
-    def encode(self, x):
+    def encode(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)
         x = self.conv2(x)
         x = x.view(x.size(0), -1)
         x = self.encoder(x)
         return x
 
-    def decode(self, z):
+    def decode(self, z: torch.Tensor) -> torch.Tensor:
         z = self.fc3(z)
         z = z.view(-1, 16, self.l2height, self.l2width)
         z = self.convtrans1(z, output_size=(self.l1height, self.l1width))
@@ -116,7 +137,7 @@ class CAE(nn.Module):
         z = functional.interpolate(z, size=(self.height, self.width), mode="bilinear")
         return z
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         # mu, sigma = self.encode(x)
         z = self.encode(x)
         xp = self.decode(z)

@@ -1,12 +1,18 @@
-# Local and global spatial autocorrelation
+"""Local and global spatial autocorrelation."""
+
+from __future__ import annotations
+
+import typing as ty
 
 import numpy as np
 
-from moran_imaging.centralized_conditional_randomization_engine import *
-from moran_imaging.spatial_weights_matrix import *
+from moran_imaging.centralized_conditional_randomization_engine import crand, moran_local_crand
+
+if ty.TYPE_CHECKING:
+    from moran_imaging.spatial_weights_matrix import SpatialWeightsMatrix
 
 
-def lag_spatial(W, y):
+def lag_spatial(W: SpatialWeightsMatrix, y: np.ndarray) -> np.ndarray:
     """
     Spatial lag operator. If W is row-standardized, compute the weighted mean of each observation's neighbors.
 
@@ -21,9 +27,7 @@ def lag_spatial(W, y):
     -------
     Wy : array
     """
-    Wy = W.sparse * y
-
-    return Wy
+    return W.sparse * y
 
 
 class MoranLocal:
@@ -64,7 +68,15 @@ class MoranLocal:
                        Standardized local Moran's I statistics based on permutations.
     """
 
-    def __init__(self, ion_image, W, background_mask, num_permute=999, significance_test=False, num_jobs=-1):
+    def __init__(
+        self,
+        ion_image: np.ndarray,
+        W: SpatialWeightsMatrix,
+        background_mask: np.ndarray,
+        num_permute: int = 999,
+        significance_test: bool = False,
+        num_jobs: int = -1,
+    ):
         # Flatten ion image and perform mean-centering (excluding background pixels)
         ion_image_flat = np.asarray(ion_image).flatten()
         if len(background_mask) == 0:
@@ -109,14 +121,13 @@ class MoranLocal:
             self.VI_sim = self.seI_sim * self.seI_sim
             self.z_sim = (self.Moran_I_local - self.EI_sim) / (self.seI_sim + 1e-12)
 
-    def _compute_local_moran_i(self, W, z):
+    def _compute_local_moran_i(self, W: SpatialWeightsMatrix, z):
         z_lag = lag_spatial(W, z)
         numerator = z * z_lag
         denominator = (z * z).sum()
-        Is = numerator / denominator
-        return Is
+        return numerator / denominator
 
-    def _determine_scatterplot_quadrant(self, W, z, quads):
+    def _determine_scatterplot_quadrant(self, W: SpatialWeightsMatrix, z, quads):
         z_lag = lag_spatial(W, z)
         z_pos = z > 0
         lag_pos = z_lag > 0
@@ -124,8 +135,7 @@ class MoranLocal:
         neg_pos = (1 - z_pos) * lag_pos
         neg_neg = (1 - z_pos) * (1 - lag_pos)
         pos_neg = z_pos * (1 - lag_pos)
-        q = quads[0] * pos_pos + quads[1] * neg_pos + quads[2] * neg_neg + quads[3] * pos_neg
-        return q
+        return quads[0] * pos_pos + quads[1] * neg_pos + quads[2] * neg_neg + quads[3] * pos_neg
 
 
 class MoranGlobal:
@@ -161,7 +171,9 @@ class MoranGlobal:
                         Standardized global Moran's I statistics based on permutations.
     """
 
-    def __init__(self, ion_image, W, background_mask, num_permute=999):
+    def __init__(
+        self, ion_image: np.ndarray, W: SpatialWeightsMatrix, background_mask: np.ndarray, num_permute: int = 999
+    ):
         # Flatten ion image and perform mean-centering (excluding background pixels from the mean calculation)
         ion_image_flat = np.asarray(ion_image).flatten()
         if len(background_mask) == 0:
@@ -195,7 +207,7 @@ class MoranGlobal:
         self.VI_sim = self.seI_sim**2
         self.z_sim = (self.Moran_I_global - self.EI_sim) / (self.seI_sim + 1e-12)
 
-    def _compute_global_moran_i(self, z, W, factor):
+    def _compute_global_moran_i(self, z, W: SpatialWeightsMatrix, factor):
         z_lag = lag_spatial(W, z)
         inum = (z * z_lag).sum()
         z2ss = (z * z).sum()
@@ -232,7 +244,7 @@ class GearyGlobal:
                      Standardized global Geary's c statistics based on permutations.
     """
 
-    def __init__(self, y, W, num_permute=999):
+    def __init__(self, y, W: SpatialWeightsMatrix, num_permute=999):
         # Flatten and center the image
         y = np.asarray(y).flatten()
 
@@ -257,7 +269,7 @@ class GearyGlobal:
         self.VC_sim = self.seC_sim**2
         self.z_sim = (self.Geary_c_global - self.EC_sim) / (self.seC_sim + 1e-12)
 
-    def _compute_global_geary_c(self, y, W):
+    def _compute_global_geary_c(self, y, W: SpatialWeightsMatrix):
         # Numerator
         focal_ix, neighbor_ix = W.sparse.nonzero()
         numerator = (W.sparse.data * ((y[focal_ix] - y[neighbor_ix]) ** 2)).sum()
@@ -266,7 +278,6 @@ class GearyGlobal:
         # Denominator
         z = y - y.mean()
         denominator = sum(z * z) * W.s0 * 2.0
-
         return numerator / denominator
 
 

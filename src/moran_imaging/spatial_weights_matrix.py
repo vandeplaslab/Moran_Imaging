@@ -1,4 +1,6 @@
-# Defining spatial weights matrix
+"""Defining spatial weights matrix."""
+
+from __future__ import annotations
 
 import warnings
 
@@ -10,7 +12,11 @@ from scipy.sparse.csgraph import connected_components
 
 
 def define_spatial_weights_matrix(
-    image_shape, contiguity="Queen", neighbourhood_order=1, background_mask=np.array([]), with_lower_order=False
+    image_shape: tuple[int, int],
+    contiguity: str = "Queen",
+    neighbourhood_order: int = 1,
+    background_mask: np.ndarray = np.array([]),
+    with_lower_order: bool = False,
 ):
     """
     Define a Queen or Rook spatial weights contiguity matrix.
@@ -53,7 +59,9 @@ def define_spatial_weights_matrix(
     return W
 
 
-def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", missing=None):
+def define_lattice_spatial_weights_matrix(
+    nrows: int, ncols: int, contiguity: str = "Queen", missing: list | None = None
+) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a regular lattice.
     Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
@@ -103,7 +111,7 @@ def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", miss
     return SpatialWeightsMatrix(neighbors=w, weights=weights, ids=ids, id_order=ids[:], silence_warnings=True)
 
 
-def compute_neighbors(i, ncols, nrows, r1, c1, rid, cid, contiguity):
+def compute_neighbors(i: int, ncols: int, nrows: int, r1, c1, rid, cid, contiguity):
     """Compute neighbors for a single cell at index i."""
     neighbors = []
 
@@ -139,7 +147,7 @@ def compute_neighbors(i, ncols, nrows, r1, c1, rid, cid, contiguity):
     return neighbors
 
 
-def define_higher_order_spatial_weights(w, k, lower_order):
+def define_higher_order_spatial_weights(w, k: int, lower_order: bool) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a neighbourhood order larger or equal than two pixels.
     From https://pysal.org/libpysal/_modules/libpysal/weights/util.html#higher_order.
@@ -252,7 +260,14 @@ class SpatialWeightsMatrix:
     set_transform([value]): Transformation of the weights.
     """
 
-    def __init__(self, neighbors, weights=None, id_order=None, silence_warnings=False, ids=None):
+    def __init__(
+        self,
+        neighbors: dict,
+        weights: dict | None = None,
+        id_order: list | None = None,
+        silence_warnings: bool = False,
+        ids: list | None = None,
+    ):
         self.silence_warnings = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
@@ -287,7 +302,7 @@ class SpatialWeightsMatrix:
                 )
             warnings.warn(message)
 
-    def _reset(self):
+    def _reset(self) -> None:
         """Reset properties."""
         self._cache = {}
 

@@ -1,13 +1,20 @@
-# Plotting functions
+"""Plotting functions."""
+
+from __future__ import annotations
+
+import typing as ty
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
-from moran_imaging.local_global_spatial_autocorrelation import *
+if ty.TYPE_CHECKING:
+    from moran_imaging.local_global_spatial_autocorrelation import MoranLocal
+    from moran_imaging.spatial_weights_matrix import SpatialWeightsMatrix
 
 
-def position_discrete_colorbar_ticks(min_tick, num_ticks):
+def position_discrete_colorbar_ticks(min_tick: float, num_ticks: int) -> np.ndarray:
     """Determine tick locations for a discrete colorbar given the total number of ticks and the minimum tick value.
     We assume that the total number of ticks is also equal to the maximum tick value.
     """
@@ -16,11 +23,10 @@ def position_discrete_colorbar_ticks(min_tick, num_ticks):
     for _index in range(0, num_ticks - 1):
         tick_location.append(tick_location[-1] + 2 * step)
     tick_location = [min_tick + (num_ticks - 1) * x for x in tick_location]
-
     return np.round(tick_location, 5)
 
 
-def moran_hot_cold_spots(moran_local, p):
+def moran_hot_cold_spots(moran_local: MoranLocal, p: float) -> np.ndarray:
     """Assign each pixel to a quadrant (labelled from one to four) of the Moran scatterplot."""
     if p is not None:
         significance = moran_local.p_sim < p
@@ -28,20 +34,24 @@ def moran_hot_cold_spots(moran_local, p):
         low_high = 2 * np.logical_and(significance, moran_local.quadrant == 2)
         low_low = 3 * np.logical_and(significance, moran_local.quadrant == 3)
         high_low = 4 * np.logical_and(significance, moran_local.quadrant == 4)
-
     else:
         high_high = 1 * (moran_local.quadrant == 1)
         low_high = 2 * (moran_local.quadrant == 2)
         low_low = 3 * (moran_local.quadrant == 3)
         high_low = 4 * (moran_local.quadrant == 4)
-
-    cluster = high_high + low_low + low_high + high_low
-
-    return cluster
+    return high_high + low_low + low_high + high_low
 
 
 def plot_moran_local_scatterplot(
-    moran_local, W, background_mask, ion_image, mz, p=None, colormap=None, axes=None, with_colorbar=True
+    moran_local: MoranLocal,
+    W: SpatialWeightsMatrix,
+    background_mask: np.ndarray,
+    ion_image: np.ndarray,
+    mz: float,
+    p: float | None = None,
+    colormap: str | None = None,
+    axes: plt.Axes | None = None,
+    with_colorbar: bool = True,
 ):
     """
     Moran Scatterplot with option of coloring of Local Moran Statistics.
@@ -114,9 +124,9 @@ def plot_moran_local_scatterplot(
 
     # Parameters for plotting the scatter points and the linear regression line
     scatter_kwds = {}
-    fitline_kwds = {}
     scatter_kwds.setdefault("alpha", 0.6)
     scatter_kwds.setdefault("s", 40)
+    fitline_kwds = {}
     fitline_kwds.setdefault("alpha", 0.9)
 
     # Create Matplotlib figure and axes
