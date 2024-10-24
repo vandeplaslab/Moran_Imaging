@@ -283,7 +283,7 @@ def compute_chunk(
             # we need to fix the self-weight to the first position
             weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
             weights_i[0] = self_weights[i]
-            ### this chomps the next `cardinality` weights off of `weights`
+            # this chomps the next `cardinality` weights off of `weights`
             weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         wloc += cardinality
         z_chunk[i]
@@ -302,7 +302,7 @@ def compute_chunk(
 
 
 @njit(fastmath=True)
-def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
+def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int) -> np.ndarray:
     """
     Utility function to construct offsets into the weights
     flat data array found in the W.sparse.data object

@@ -42,6 +42,7 @@ def moran_hot_cold_spots(moran_local: MoranLocal, p: float) -> np.ndarray:
     return high_high + low_low + low_high + high_low
 
 
+# noinspection PyPep8Naming
 def plot_moran_local_scatterplot(
     moran_local: MoranLocal,
     W: SpatialWeightsMatrix,

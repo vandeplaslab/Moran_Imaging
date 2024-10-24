@@ -31,8 +31,8 @@ def run_knn(features: np.ndarray, k: int = 10) -> np.ndarray:
 
 
 def pseudo_labeling(
-    ub: float, lb: float, sim: torch.tensor, index, knn: bool, knn_adj=None
-) -> tuple[torch.tensor, torch.tensor]:
+    ub: float, lb: float, sim: np.ndarray, index, knn: bool, knn_adj=None
+) -> tuple[torch.Tensor, torch.Tensor]:
     """Pseudo labeling for the similarity matrix."""
     pos_loc = (sim >= ub).astype("float64")
     neg_loc = (sim <= lb).astype("float64")
@@ -40,10 +40,10 @@ def pseudo_labeling(
     if knn:
         knn_submat = knn_adj[np.ix_(index, index)]
         # Todo: Not 100% sure with this one, should be checked again
-        pos_loc = torch.tensor(np.maximum(pos_loc, knn_submat))
-        neg_loc = torch.tensor(np.minimum(neg_loc, 1 - knn_submat))
+        pos_loc = torch.tensor(np.maximum(pos_loc, knn_submat))  # type: ignore[assignment]
+        neg_loc = torch.tensor(np.minimum(neg_loc, 1 - knn_submat))  # type: ignore[assignment]
 
     else:
-        pos_loc = torch.tensor(pos_loc)
-        neg_loc = torch.tensor(neg_loc)
+        pos_loc = torch.tensor(pos_loc)  # type: ignore[assignment]
+        neg_loc = torch.tensor(neg_loc)  # type: ignore[assignment]
     return pos_loc, neg_loc
