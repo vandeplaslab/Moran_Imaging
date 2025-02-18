@@ -1,30 +1,15 @@
 ### Conditional randomization engine
 # Numba-accelerated code for conditional randomization.
-# Adapted from from the centralized conditional randomisation engine of Exploratory Spatial Data Analysis (ESDA). 
+# Adapted from from the centralized conditional randomisation engine of Exploratory Spatial Data Analysis (ESDA).
 # See https://github.com/pysal/esda/blob/master/esda/crand.py
+from __future__ import annotations
 
 import os
 import warnings
+
 import numpy as np
 
-try:
-    from numba import boolean, jit, njit, prange
-except (ImportError, ModuleNotFoundError):
-
-    def jit(*dec_args, **dec_kwargs):
-        """
-        decorator mimicking numba.jit
-        """
-
-        def intercepted_function(f, *f_args, **f_kwargs):
-            return f
-
-        return intercepted_function
-
-    njit = jit
-
-    prange = range
-    boolean = bool
+from moran_imaging._numba import boolean, njit, prange
 
 __all__ = ["crand"]
 
@@ -72,7 +57,7 @@ def crand(
     n_jobs,
     stat_func,
     scaling=None,
-    seed=None,
+    seed: int | None = None,
     island_weight=0,
 ):
     """
@@ -134,7 +119,8 @@ def crand(
     if seed is None:
         seed = np.random.randint(12345, 12345000)
 
-    # we need to be careful to shuffle only *other* sites, not the self-site. This means we need to extract the self-weight, if any
+    # we need to be careful to shuffle only *other* sites, not the self-site. This means we need to extract the
+    # self-weight, if any
     self_weights = adj_matrix.diagonal()
     # force the self-site weight to zero
     with warnings.catch_warnings():
@@ -145,7 +131,8 @@ def crand(
     # extract the weights from a now no-self-weighted adj_matrix
     other_weights = adj_matrix.data
     # use the non-self weight as the cardinality, since this is the set we have to randomize.
-    # if there is a self-neighbor, we need to *not* shuffle the self neighbor, since conditional randomization conditions on site i.
+    # if there is a self-neighbor, we need to *not* shuffle the self neighbor, since conditional randomization
+    # conditions on site i.
     cardinalities = np.array((adj_matrix != 0).sum(1)).flatten()
     max_card = cardinalities.max()
     permuted_ids = vec_permutations(max_card, n, permutations, seed)
@@ -282,10 +269,7 @@ def compute_chunk(
     chunk_n = z_chunk.shape[0]
     n = z.shape[0]
     larger = np.zeros((chunk_n,), dtype=np.int64)
-    if keep:
-        rlocals = np.empty((chunk_n, permuted_ids.shape[0]))
-    else:
-        rlocals = np.empty((1, 1))
+    rlocals = np.empty((chunk_n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
 
     mask = np.ones((n,), dtype=np.int8) == 1
     wloc = 0
@@ -293,20 +277,18 @@ def compute_chunk(
     for i in range(chunk_n):
         cardinality = cardinalities[i]
         if cardinality == 0:  # deal with islands
-            effective_cardinality = 1
             weights_i = np.zeros(2, dtype=other_weights.dtype)
             weights_i[1] = island_weight
         else:
-            effective_cardinality = cardinality
             # we need to fix the self-weight to the first position
             weights_i = np.zeros(cardinality + 1, dtype=other_weights.dtype)
             weights_i[0] = self_weights[i]
-            ### this chomps the next `cardinality` weights off of `weights`
+            # this chomps the next `cardinality` weights off of `weights`
             weights_i[1:] = other_weights[wloc : (wloc + cardinality)]
         wloc += cardinality
-        z_chunk_i = z_chunk[i]
+        z_chunk[i]
         mask[chunk_start + i] = False
-        z_no_i = z[mask,]
+        z[mask,]
         rstats = stat_func(chunk_start + i, z, permuted_ids, weights_i, scaling)
         if keep:
             rlocals[i,] = rstats
@@ -320,7 +302,7 @@ def compute_chunk(
 
 
 @njit(fastmath=True)
-def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int):
+def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int) -> np.ndarray:
     """
     Utility function to construct offsets into the weights
     flat data array found in the W.sparse.data object
@@ -503,10 +485,7 @@ def parallel_crand(
     # ------------------------------------------------------------------
     # Set up output holders
     larger = np.zeros((n,), dtype=np.int64)
-    if keep:
-        rlocals = np.empty((n, permuted_ids.shape[0]))
-    else:
-        rlocals = np.empty((1, 1))
+    rlocals = np.empty((n, permuted_ids.shape[0])) if keep else np.empty((1, 1))
     # ------------------------------------------------------------------
     # Joblib parallel loop by chunks
 

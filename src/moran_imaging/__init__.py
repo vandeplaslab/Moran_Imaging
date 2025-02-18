@@ -1,4 +1,6 @@
-"""Spatial analysis of molecular imaging data: spatial dependence and heterogeneity statistics, spatial segmentation, spatial clustering."""
+"""Spatial analysis of molecular imaging data: spatial dependence and heterogeneity statistics, spatial segmentation,
+spatial clustering.
+"""
 
 from importlib.metadata import PackageNotFoundError, version
 

@@ -1,6 +1,9 @@
-# Defining spatial weights matrix
+"""Defining spatial weights matrix."""
+
+from __future__ import annotations
 
 import warnings
+
 import numpy as np
 import pandas
 import scipy.sparse
@@ -9,7 +12,11 @@ from scipy.sparse.csgraph import connected_components
 
 
 def define_spatial_weights_matrix(
-    image_shape, contiguity="Queen", neighbourhood_order=1, background_mask=np.array([]), with_lower_order=False
+    image_shape: tuple[int, int],
+    contiguity: str = "Queen",
+    neighbourhood_order: int = 1,
+    background_mask: np.ndarray = np.array([]),
+    with_lower_order: bool = False,
 ):
     """
     Define a Queen or Rook spatial weights contiguity matrix.
@@ -33,10 +40,7 @@ def define_spatial_weights_matrix(
     """
     # Convert boolean background mask to list of missing value indices
     # Pixels with missing values become isolates/islands of the spatial weights matrix
-    if len(background_mask) == 0:
-        background_index = []
-    else:
-        background_index = np.argwhere(background_mask == True)[:, 0].tolist()
+    background_index = [] if len(background_mask) == 0 else np.argwhere(background_mask is True)[:, 0].tolist()
 
     # Define 1st order Queen or Rook contiguity matrix
     if contiguity == "Queen":
@@ -55,7 +59,9 @@ def define_spatial_weights_matrix(
     return W
 
 
-def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", missing=[]):
+def define_lattice_spatial_weights_matrix(
+    nrows: int, ncols: int, contiguity: str = "Queen", missing: list | None = None
+) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a regular lattice.
     Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
@@ -76,6 +82,8 @@ def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", miss
     -------
     spatial_weights_matrix : First-order contiguity-based spatial weights matrix object.
     """
+    if missing is None:
+        missing = []
     n = nrows * ncols
     r1 = nrows - 1
     c1 = ncols - 1
@@ -88,7 +96,7 @@ def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", miss
     )
 
     # Create the spatial weights matrix
-    w = {i: neighbors for i, neighbors in enumerate(results)}
+    w = dict(enumerate(results))
 
     # Remove weights corresponding to missing values
     if missing:
@@ -100,10 +108,10 @@ def define_lattice_spatial_weights_matrix(nrows, ncols, contiguity="Queen", miss
         weights[key] = [1.0] * len(w[key])
     ids = list(range(n))
 
-    return spatial_weights_matrix(neighbors=w, weights=weights, ids=ids, id_order=ids[:], silence_warnings=True)
+    return SpatialWeightsMatrix(neighbors=w, weights=weights, ids=ids, id_order=ids[:], silence_warnings=True)
 
 
-def compute_neighbors(i, ncols, nrows, r1, c1, rid, cid, contiguity):
+def compute_neighbors(i: int, ncols: int, nrows: int, r1, c1, rid, cid, contiguity):
     """Compute neighbors for a single cell at index i."""
     neighbors = []
 
@@ -139,10 +147,10 @@ def compute_neighbors(i, ncols, nrows, r1, c1, rid, cid, contiguity):
     return neighbors
 
 
-def define_higher_order_spatial_weights(w, k, lower_order):
+def define_higher_order_spatial_weights(w, k: int, lower_order: bool) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a neighbourhood order larger or equal than two pixels.
-    From https://pysal.org/libpysal/_modules/libpysal/weights/util.html#higher_order
+    From https://pysal.org/libpysal/_modules/libpysal/weights/util.html#higher_order.
 
     Inputs
     ----------
@@ -161,7 +169,7 @@ def define_higher_order_spatial_weights(w, k, lower_order):
     w = w.sparse
 
     if lower_order:
-        wk = sum(map(lambda x: w**x, range(2, k + 1)))
+        wk = sum(w**x for x in range(2, k + 1))
         shortest_path = False
     else:
         wk = w**k
@@ -176,8 +184,8 @@ def define_higher_order_spatial_weights(w, k, lower_order):
             sj = set(zip(rj, cj))
             sk.difference_update(sj)
 
-    sk = set([(i, j) for i, j in sk if i != j])
-    d = dict([(i, []) for i in id_order])
+    sk = {(i, j) for i, j in sk if i != j}
+    d = {i: [] for i in id_order}
 
     for pair in sk:
         k, v = pair
@@ -185,10 +193,10 @@ def define_higher_order_spatial_weights(w, k, lower_order):
         v = id_order[v]
         d[k].append(v)
 
-    return spatial_weights_matrix(neighbors=d, silence_warnings=True)
+    return SpatialWeightsMatrix(neighbors=d, silence_warnings=True)
 
 
-class spatial_weights_matrix:
+class SpatialWeightsMatrix:
     r"""
     Spatial weights matrix class.
 
@@ -252,7 +260,14 @@ class spatial_weights_matrix:
     set_transform([value]): Transformation of the weights.
     """
 
-    def __init__(self, neighbors, weights=None, id_order=None, silence_warnings=False, ids=None):
+    def __init__(
+        self,
+        neighbors: dict,
+        weights: dict | None = None,
+        id_order: list | None = None,
+        silence_warnings: bool = False,
+        ids: list | None = None,
+    ):
         self.silence_warnings = silence_warnings
         self.transformations = {}
         self.neighbors = neighbors
@@ -287,7 +302,7 @@ class spatial_weights_matrix:
                 )
             warnings.warn(message)
 
-    def _reset(self):
+    def _reset(self) -> None:
         """Reset properties."""
         self._cache = {}
 
@@ -357,7 +372,7 @@ class spatial_weights_matrix:
     def s0(self):
         r"""s0 is defined as
         .. math::
-               s0=\sum_i \sum_j w_{i,j}
+               s0=\sum_i \sum_j w_{i,j}.
         """
         if "s0" not in self._cache:
             self._s0 = self.sparse.sum()
@@ -368,7 +383,7 @@ class spatial_weights_matrix:
     def s1(self):
         r"""s1 is defined as
         .. math::
-               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2
+               s1=1/2 \sum_i \sum_j \Big(w_{i,j} + w_{j,i}\Big)^2.
         """
         if "s1" not in self._cache:
             t = self.sparse.transpose()
@@ -397,7 +412,7 @@ class spatial_weights_matrix:
     def s2(self):
         r"""s2 is defined as
         .. math::
-                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2
+                s2=\sum_j \Big(\sum_i w_{i,j} + \sum_i w_{j,i}\Big)^2.
         """
         if "s2" not in self._cache:
             self._s2 = self.s2array.sum()
@@ -630,7 +645,7 @@ class spatial_weights_matrix:
             raise Exception("ordered_ids do not align with W ids")
 
     def __get_id_order(self):
-        """Returns the ids for the observations in the order in which they would be encountered if iterating over the weights."""
+        """Retyrb the ids for the observations in the order in which they would be encountered if iterating over the weights."""
         return self._id_order
 
     id_order = property(__get_id_order, __set_id_order)
@@ -706,9 +721,8 @@ class spatial_weights_matrix:
                 for i in self.weights:
                     wijs = self.weights[i]
                     row_sum = sum(wijs) * 1.0
-                    if row_sum == 0.0:
-                        if not self.silence_warnings:
-                            print(("WARNING: ", i, " is an island (no neighbors)"))
+                    if row_sum == 0.0 and not self.silence_warnings:
+                        pass
                     weights[i] = [wij / row_sum for wij in wijs]
                 weights = weights
                 self.transformations[value] = weights
@@ -817,7 +831,6 @@ class spatial_weights_matrix:
         weight_col : str
             Name of the column in which to store weight information.
         """
-        links = []
         focal_ix, neighbor_ix = self.sparse.nonzero()
         names = np.asarray(self.id_order)
         focal = names[focal_ix]
@@ -829,3 +842,6 @@ class spatial_weights_matrix:
         adjlist = pandas.concat((adjlist, island_adjlist)).reset_index(drop=True)
 
         return adjlist.sort_values([focal_col, neighbor_col])
+
+
+spatial_weights_matrix = SpatialWeightsMatrix

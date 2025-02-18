@@ -10,27 +10,19 @@ Spatial analysis of molecular imaging data: spatial dependence and heterogeneity
 
 ### Installation
 
-You can install Moran_Imaging from PyPI:
+You can install Moran_Imaging, with its mandatory dependencies, from PyPI:
 
 ```bash
 pip install Moran_Imaging
 ```
 
-### Citation
+Our package supports Python version 3.8 and above. Its mandatory dependencies are `jupyterlab`, `h5py`, `joblib`, `seaborn`, `matplotlib`, `numba`, `numpy`, `pandas`, `scikit-image`, `scikit-learn`, `scipy`, `torch`, `tqdm`, and `umap-learn`. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
-If you reuse our code, please cite our work **provide link to preprint**. 
-For academic publications, please use the following Bibtex entry:
+### Data download
 
-**Insert a bibtex-like citation hereunder**
+Refer to Zenodo
 
-	@article{polanski2019bbknn,
-	  title={BBKNN: Fast Batch Alignment of Single Cell Transcriptomes},
-	  author={Pola{\'n}ski, Krzysztof and Young, Matthew D and Miao, Zhichao and Meyer, Kerstin B and Teichmann, Sarah A and Park, Jong-Eun},
-	  doi={10.1093/bioinformatics/btz625},
-	  journal={Bioinformatics},
-	  year={2019}
-	}
-
+Refer to Metaspace
 
 ### Tutorials
 
@@ -53,3 +45,18 @@ The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spe
         jupyter lab Demo_notebook_clustering.ipynb
 
 Run the Demo_notebook_exploratory_analysis.ipynb notebook to reproduce figures 3, 4, 5, 6, S1 and S2 of our paper. Run the Demo_notebook_segmentation.ipynb notebook to reproduce figures 7, 8, and 9. Run the Demo_notebook_clustering.ipynb notebook to reproduce Figure 12, S3, S4, S5, S6, S7, S8, S9, and S10. Please note that running the deep clustering section of the Demo_notebook_clustering.ipynb notebook may be time-consuming.
+
+### Citation
+
+If you reuse our code, please cite our work **provide link to preprint**. 
+For academic publications, please use the following Bibtex entry:
+
+**Insert a bibtex-like citation hereunder**
+
+	@article{polanski2019bbknn,
+	  title={BBKNN: Fast Batch Alignment of Single Cell Transcriptomes},
+	  author={Pola{\'n}ski, Krzysztof and Young, Matthew D and Miao, Zhichao and Meyer, Kerstin B and Teichmann, Sarah A and Park, Jong-Eun},
+	  doi={10.1093/bioinformatics/btz625},
+	  journal={Bioinformatics},
+	  year={2019}
+	}
