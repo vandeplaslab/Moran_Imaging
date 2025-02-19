@@ -42,7 +42,8 @@ dependencies = [
     "umap-learn>=0.5.0",
     "torch">=1.10.0, 
     "torchvision">=0.10.0, 
-    "kornia">=0.2.0
+    "kornia">=0.2.0, 
+    "byol-pytorch", 
     "jupyterlab",
     "seaborn",
     "h5py",
