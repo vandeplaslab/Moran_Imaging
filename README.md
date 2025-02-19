@@ -22,8 +22,6 @@ Our package supports Python version 3.8 and above. Its mandatory dependencies ar
 
 Refer to Zenodo
 
-Refer to Metaspace
-
 ### Tutorials
 
 The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spectrometry: A Spatial Perspective" by Leonore Tideman, Lukasz G. Migas, Katerina V. Djambazova, Jacquelyn Spathies, Jeffrey M. Spraggins, and Raf Van de Plas (2024). Follow our instructions to reproduce our results. 
@@ -32,13 +30,13 @@ The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spe
 
         pip install Moran_Imaging
 
-3. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_PCA_dataset.pickle. **provide link to zenodo**
+2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_PCA_dataset.pickle. 
 
-5. Download the following three tutorial notebooks: Demo_notebook_exploratory_analysis.ipynb, Demo_notebook_segmentation.ipynb, Demo_notebook_clustering.ipynb.
+3. Download the following three tutorial notebooks: Demo_notebook_exploratory_analysis.ipynb, Demo_notebook_segmentation.ipynb, Demo_notebook_clustering.ipynb.
 
-7. Define two subfolders: one subfolder should be called Data and the other should be called Figures. Save the three datasets in the Data subfolder and leave the Figures subfolder empty.
+4. Define two subfolders: one subfolder should be called Data and the other should be called Figures. Save the three datasets in the Data subfolder and leave the Figures subfolder empty.
    
-9. Open the JupyterLab interactive development environment, and run the three following Jupyter notebooks.
+5. Open the JupyterLab interactive development environment, and run the three following Jupyter notebooks.
 
         jupyter lab Demo_notebook_exploratory_analysis.ipynb 
         jupyter lab Demo_notebook_segmentation.ipynb
