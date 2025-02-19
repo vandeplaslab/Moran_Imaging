@@ -1,4 +1,4 @@
-"""Deep clustering"""
+"""NRDC clustering workflow"""
 
 # Paper: "A noise-robust deep clustering of biomolecular ions improves interpretability of mass spectrometric images"
 # by Dan Guo, Melanie Christine Föll, Kylie Ariel Bemis, Olga Vitek. 2023, Bioinformatics,
