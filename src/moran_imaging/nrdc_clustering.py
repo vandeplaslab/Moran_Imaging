@@ -1,8 +1,7 @@
-"""NRDC clustering workflow"""
+# Deep clustering
 
-# Paper: "A noise-robust deep clustering of biomolecular ions improves interpretability of mass spectrometric images"
-# by Dan Guo, Melanie Christine Föll, Kylie Ariel Bemis, Olga Vitek. 2023, Bioinformatics,
-# DOI: 10.1093/bioinformatics/btad067.
+# Paper: "A noise-robust deep clustering of biomolecular ions improves interpretability of mass spectrometric images" by Dan Guo,
+# Melanie Christine Föll, Kylie Ariel Bemis, Olga Vitek. 2023, Bioinformatics, DOI: 10.1093/bioinformatics/btad067.
 
 # Original code by Dan Guo: https://github.com/DanGuo1223/mzClustering
 # Improved code by Tim Daniel Rose: https://github.com/tdrose/deep_mzClustering
@@ -14,29 +13,28 @@ import numpy as np
 import torch
 import torch.nn.functional as functional
 
-from moran_imaging.cae import CAE
-from moran_imaging.cnn_clustering import CNNClust
-from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
+from .cae import CAE
+from .cnn_clustering import cnnClust
+from .pseudo_labeling import pseudo_labeling, run_knn
 
 
-class DeepClustering:
-    """Deep clustering class for unsupervised clustering of mass spectrometry images."""
-
+class Deep_Clustering:
     def __init__(
         self,
         ims_dataset,
         acquisition_mask,
         image_shape,
-        num_cluster: int = 5,
+        num_cluster=5,
         label_path=None,
-        lr: float = 0.0001,
-        batch_size: int = 128,
-        kn: bool = True,
-        k: int = 10,
-        use_gpu: bool = True,
-        random_seed: int = 0,
+        lr=0.0001,
+        batch_size=128,
+        knn=True,
+        k=10,
+        use_gpu=True,
+        random_seed=0,
     ):
-        super().__init__()
+
+        super(Deep_Clustering, self).__init__()
 
         self.label_path = label_path
         self.num_cluster = num_cluster
@@ -80,7 +78,10 @@ class DeepClustering:
     def get_batch(train_image, batch_size, train_label=None):
         sample_id = sample(range(len(train_image)), batch_size)
         batch_image = train_image[sample_id,]
-        batch_label = None if train_label is None else train_label[sample_id,]
+        if train_label is None:
+            batch_label = None
+        else:
+            batch_label = train_label[sample_id,]
         return batch_image, batch_label, sample_id
 
     @staticmethod
@@ -94,8 +95,9 @@ class DeepClustering:
         return batch_image, batch_label
 
     def train(self):
+
         cae = CAE(train_mode=True, height=self.height, width=self.width).to(self.device)
-        clust = CNNClust(num_clust=self.num_cluster, height=self.height, width=self.width).to(self.device)
+        clust = cnnClust(num_clust=self.num_cluster, height=self.height, width=self.width).to(self.device)
 
         model_params = list(cae.parameters()) + list(clust.parameters())
         optimizer = torch.optim.RMSprop(params=model_params, lr=0.001, weight_decay=0)
@@ -103,7 +105,7 @@ class DeepClustering:
 
         uu = 98
         ll = 46
-        loss_list = []
+        loss_list = list()
 
         torch.manual_seed(self.random_seed)
         if self.use_gpu:
@@ -111,9 +113,10 @@ class DeepClustering:
             torch.backends.cudnn.deterministic = True
 
         # Pretraining of CAE only
-        for _epoch in range(0, 11):
-            losses = []
-            for _it in range(501):
+        for epoch in range(0, 11):
+            losses = list()
+            for it in range(501):
+
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
@@ -126,12 +129,15 @@ class DeepClustering:
                 optimizer.step()
                 losses.append(loss.item())
 
+            print(f"Pretraining Epoch: {epoch} Loss: {sum(losses) / len(losses):.6f}")
+
         optimizer = torch.optim.RMSprop(params=model_params, lr=0.01, weight_decay=0.0)
 
         # Full model training
-        for _epoch in range(0, 11):
-            losses = []
-            losses2 = []
+        for epoch in range(0, 11):
+
+            losses = list()
+            losses2 = list()
 
             train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
@@ -147,7 +153,8 @@ class DeepClustering:
             # Similarity as defined in formula 2 of the paper
             sim_mat = torch.matmul(features, torch.transpose(features, 0, 1))
 
-            for _it in range(31):
+            for it in range(31):
+
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
@@ -196,11 +203,12 @@ class DeepClustering:
 
             uu = uu - 1
             ll = ll + 4
+            print(f"Training Epoch: {epoch} Loss: {sum(losses) / len(losses):.6f}")
         return cae, clust
 
     def inference(self, cae, clust):
         with torch.no_grad():
-            pred_label = []
+            pred_label = list()
 
             test_x = torch.Tensor(self.image_data).to(self.device)
             test_x = test_x.reshape((-1, 1, self.height, self.width))
@@ -214,14 +222,11 @@ class DeepClustering:
 
             return pred_label
 
-    def reshape_image(self, data: np.ndarray, background_mask: np.ndarray) -> np.ndarray:
+    def reshape_image(self, data, background_mask):
         # Fill background pixels with zeros (default) or NaN
         pixel_grid = np.zeros((self.height * self.width,))
         pixel_grid[np.invert(background_mask)] = data
 
         # Reshape data
-        return np.reshape(pixel_grid, [self.height, self.width])
-
-
-# Kept for backward compatibility
-Deep_Clustering = DeepClustering
+        image = np.reshape(pixel_grid, [self.height, self.width])
+        return image
