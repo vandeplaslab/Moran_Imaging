@@ -24,25 +24,29 @@ Refer to Zenodo
 
 ### Tutorials
 
-The paper corresponding to the Moran_Imaging Python package is "Imaging Mass Spectrometry: A Spatial Perspective" by Leonore Tideman, Lukasz G. Migas, Katerina V. Djambazova, Jacquelyn Spathies, Jeffrey M. Spraggins, and Raf Van de Plas (2024). Follow our instructions to reproduce our results. 
+The paper corresponding to the Moran_Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Leonore Tideman, Lukasz G. Migas, Katerina V. Djambazova, Jacquelyn Spathies, Jeffrey M. Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
 
 1. Install the Moran_Imaging package from PyPI.
 
         pip install Moran_Imaging
 
-2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_PCA_dataset.pickle. 
+2. Download the tutorial notebooks from GitHub and download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_UMAP_dataset.pickle. Open the JupyterLab interactive development environment and run the notebooks. 
 
-3. Download the following three tutorial notebooks: Demo_notebook_exploratory_analysis.ipynb, Demo_notebook_segmentation.ipynb, Demo_notebook_clustering.ipynb.
+Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. 
 
-4. Define two subfolders: one subfolder should be called Data and the other should be called Figures. Save the three datasets in the Data subfolder and leave the Figures subfolder empty.
-   
-5. Open the JupyterLab interactive development environment, and run the three following Jupyter notebooks.
+        jupyter lab Exploratory_spatial_data_analysis.ipynb 
 
-        jupyter lab Demo_notebook_exploratory_analysis.ipynb 
-        jupyter lab Demo_notebook_segmentation.ipynb
-        jupyter lab Demo_notebook_clustering.ipynb
+Run the following notebook to reproduce Figure 4 of the main manuscript, and Figures 11 and 12 of the supplementary material. We propose a computationally efficient parallelized implementation of the Moran-Felsenszwalb segmentation workflow. 
 
-Run the Demo_notebook_exploratory_analysis.ipynb notebook to reproduce figures 3, 4, 5, 6, S1 and S2 of our paper. Run the Demo_notebook_segmentation.ipynb notebook to reproduce figures 7, 8, and 9. Run the Demo_notebook_clustering.ipynb notebook to reproduce Figure 12, S3, S4, S5, S6, S7, S8, S9, and S10. Please note that running the deep clustering section of the Demo_notebook_clustering.ipynb notebook may be time-consuming.
+        jupyter lab Moran_Felsenszwalb_segmentation.ipynb
+        jupyter lab Fast_Moran_Felsenszwalb_segmentation.ipynb
+
+Run the following notebooks to reproduce the results of Table 1 of the main manuscript. Run the notebook about Moran-HOG clustering to reproduce Figures 14 to 21 of the supplementary material. We recommend running the DeepION and NRDC deep clustering workflows on a GPU. 
+ 
+        jupyter lab Moran_HOG_clustering.ipynb
+        jupyter lab DeepION_clustering.ipynb
+        jupyter lab NRDC_clustering.ipynb
+
 
 ### Citation
 
