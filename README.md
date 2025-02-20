@@ -6,7 +6,7 @@
 [![CI](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml/badge.svg)](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/LEMTideman/Moran_Imaging/branch/main/graph/badge.svg)](https://codecov.io/gh/LEMTideman/Moran_Imaging)
 
-The Moran Imaging Python library was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as multiplexed immunofluorescence imaging data, imaging mass cytometry data, or imaging mass spectrometry data. It provides the statistical tools to identify, visualize, and quantify global and local spatial patterns in molecular imaging data. it also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
+The Moran Imaging Python package was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as multiplexed immunofluorescence imaging data, imaging mass cytometry data, or imaging mass spectrometry data. It provides the statistical tools to identify, visualize, and quantify global and local spatial patterns in molecular imaging data. it also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
 
 ### Installation
 
@@ -22,7 +22,7 @@ Refer to Zenodo
 
 ### Tutorials
 
-The paper corresponding to the Moran_Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
+The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
 
 1. Install the Moran_Imaging package from PyPI.
 
