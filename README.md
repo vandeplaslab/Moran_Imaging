@@ -6,7 +6,7 @@
 [![CI](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml/badge.svg)](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/LEMTideman/Moran_Imaging/branch/main/graph/badge.svg)](https://codecov.io/gh/LEMTideman/Moran_Imaging)
 
-Spatial analysis of molecular imaging data: spatial dependence and heterogeneity statistics, spatial segmentation, spatial clustering.
+The Moran Imaging Python library was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as multiplexed immunofluorescence imaging data, imaging mass cytometry data, or imaging mass spectrometry data. It provides the statistical tools to identify, visualize, and quantify global and local spatial patterns in molecular imaging data. it also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
 
 ### Installation
 
@@ -34,7 +34,7 @@ The paper corresponding to the Moran_Imaging Python package is "Spatial Dependen
   
 3. Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the notebooks. 
 
-Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. 
+Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image.
 
         jupyter lab Exploratory_spatial_data_analysis.ipynb 
 
