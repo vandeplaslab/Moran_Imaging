@@ -6,8 +6,8 @@
 
 import numpy as np
 import scipy.sparse as sp
-from .checks_balance import check_clusterings
-from .utils_balance import entropy, mutual_info_score, contingency_matrix
+from moran_imaging.checks_balance import check_clusterings
+from moran_imaging.utils_balance import entropy, mutual_info_score, contingency_matrix
 
 def balanced_homogeneity_completeness_v_measure(
     labels_true, labels_pred, *, beta=1.0, reweigh=True

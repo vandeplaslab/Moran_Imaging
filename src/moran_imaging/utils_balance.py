@@ -7,7 +7,7 @@ import numpy as np
 from math import log
 import scipy.sparse as sp
 from sklearn.utils import sparsefuncs
-from .checks_balance import check_clusterings, check_array
+from moran_imaging.checks_balance import check_clusterings, check_array
 
 def contingency_matrix(
     labels_true, labels_pred, *, reweigh=False, eps=None, sparse=False, dtype=np.int64

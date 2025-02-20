@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import typing as ty
 
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 from mpl_toolkits.axes_grid1 import make_axes_locatable
+from moran_imaging.local_global_spatial_autocorrelation import lag_spatial
 
 if ty.TYPE_CHECKING:
     from moran_imaging.local_global_spatial_autocorrelation import MoranLocal

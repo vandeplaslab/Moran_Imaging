@@ -13,9 +13,9 @@ import numpy as np
 import torch
 import torch.nn.functional as functional
 
-from .cae import CAE
-from .cnn_clustering import cnnClust
-from .pseudo_labeling import pseudo_labeling, run_knn
+from moran_imaging.cae import CAE
+from moran_imaging.cnn_clustering import cnnClust
+from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
 
 
 class Deep_Clustering:
