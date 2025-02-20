@@ -10,13 +10,11 @@ The Moran Imaging Python library was developed for the spatio-molecular analysis
 
 ### Installation
 
-You can install Moran_Imaging, with its mandatory dependencies, from PyPI:
+You can install Moran Imaging, with its mandatory dependencies, from PyPI. Our package supports Python version 3.8 and above.
 
 ```bash
 pip install Moran_Imaging
 ```
-
-Our package supports Python version 3.8 and above. Its mandatory dependencies are `jupyterlab`, `h5py`, `joblib`, `seaborn`, `matplotlib`, `numba`, `numpy`, `pandas`, `scikit-image`, `scikit-learn`, `scipy`, `torch`, `tqdm`, and `umap-learn`. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
 ### Data download
 
@@ -30,11 +28,11 @@ The paper corresponding to the Moran_Imaging Python package is "Spatial Dependen
 
         pip install Moran_Imaging
 
-2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_UMAP_dataset.pickle.
+2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of dataset no3, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of dataset no3. Dataset no1 is from the coronal section of a Parkinson’s disease rat model. Dataset no3 is from a whole-body adult male zebrafish section. 
   
 3. Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the notebooks. 
 
-Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image.
+Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
         jupyter lab Exploratory_spatial_data_analysis.ipynb 
 
