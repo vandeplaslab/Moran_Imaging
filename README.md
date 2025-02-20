@@ -22,7 +22,7 @@ Refer to Zenodo
 
 ### Tutorials
 
-The paper corresponding to the Moran_Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Leonore Tideman, Lukasz G. Migas, Katerina V. Djambazova, Jacquelyn Spathies, Jeffrey M. Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
+The paper corresponding to the Moran_Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore E. M. Tideman, Felipe A. Moser, Jacquelyn Spathies, Katerina V. Djambazova, Cody R. Marshall, Eric P. Skaar, Matthew S. Schrag, Lukasz G. Migas, Jeffrey M. Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
 
 1. Install the Moran_Imaging package from PyPI.
 
