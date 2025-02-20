@@ -24,7 +24,7 @@ Provide link to Zenodo
 
 ### Tutorials
 
-The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the following notebooks to reproduce our results. 
+The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment, and run the following notebooks to reproduce our results. 
 
 Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
