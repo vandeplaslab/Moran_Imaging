@@ -30,7 +30,9 @@ The paper corresponding to the Moran_Imaging Python package is "Spatial Dependen
 
         pip install Moran_Imaging
 
-2. Download the tutorial notebooks from GitHub and download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_UMAP_dataset.pickle. Open the JupyterLab interactive development environment and run the notebooks. 
+2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, Zebra_fish_8_clusters_dataset.pickle, Zebra_fish_UMAP_dataset.pickle.
+  
+3. Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the notebooks. 
 
 Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. 
 
