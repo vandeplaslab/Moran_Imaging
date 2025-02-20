@@ -24,13 +24,9 @@ Refer to Zenodo
 
 The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Follow our instructions to reproduce our results. 
 
-1. Install the Moran_Imaging package from PyPI.
-
-        pip install Moran_Imaging
-
-2. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of dataset no3, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of dataset no3. Dataset no1 is from the coronal section of a Parkinson’s disease rat model. Dataset no3 is from a whole-body adult male zebrafish section. 
+1. Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of dataset no3, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of dataset no3. Dataset no1 is from the coronal section of a Parkinson’s disease rat model. Dataset no3 is from a whole-body adult male zebrafish section. 
   
-3. Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the notebooks. 
+2. Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment and run the notebooks. 
 
 Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
