@@ -69,6 +69,7 @@ def get_moran_felzenszwalb_segmentation(
     felzenszwalb_scale=50,
     felzenszwalb_sigma=0.2,
     felzenszwalb_min_size=100,
+    subset_features = [],
 ):
     """
     Segment an image using the Moran I statistic and the Felzenszwalb algorithm
@@ -87,8 +88,12 @@ def get_moran_felzenszwalb_segmentation(
     neighbour_order [optional] : int
         The order of the neighbourhood. Default is 5
     """
-    # Get the local Moran I and quadrant labels
-    _, quadrant_labels = get_local_moran_i(image, mask, neighbourhood_type, neighbourhood_order)
+    if not subset_features:
+        # Get the local Moran I and quadrant labels for all m/z bins
+        _, quadrant_labels = get_local_moran_i(image, mask, neighbourhood_type, neighbourhood_order)
+    else: 
+        # Get the local Moran I and quadrant labels for a subset of m/z bins
+        _, quadrant_labels = get_local_moran_i(image[subset_features, :], mask, neighbourhood_type, neighbourhood_order)
 
     # Segment the image using the Felzenszwalb algorithm on the quadrant labels
     felzenszwalb_segmentation = skimage.segmentation.felzenszwalb(
