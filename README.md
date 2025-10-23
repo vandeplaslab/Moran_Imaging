@@ -6,7 +6,7 @@
 [![CI](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml/badge.svg)](https://github.com/LEMTideman/Moran_Imaging/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/LEMTideman/Moran_Imaging/branch/main/graph/badge.svg)](https://codecov.io/gh/LEMTideman/Moran_Imaging)
 
-The Moran Imaging Python package was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as imaging mass spectrometry data. It provides the statistical tools to identify, visualize, and quantify spatial patterns in molecular imaging data, such as Moran's I, local Moran statistics, and the Moran quadrant map. It also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
+The Moran Imaging Python package was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as imaging mass spectrometry (IMS) data. It provides the statistical tools to identify, visualize, and quantify spatial patterns in molecular imaging data, such as Moran's I and the Moran quadrant map. It also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
 
 ### Installation
 
@@ -18,13 +18,13 @@ pip install Moran_Imaging
 
 ### Data download
 
-Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of dataset no2, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of dataset no2. Dataset no1 is from the coronal section of a Parkinson’s disease rat model. Dataset no2 is from a whole-body adult male zebrafish section. 
+Download the following three datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of IMS dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of IMS dataset no2, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of IMS dataset no2. Dataset no1 is obtained from the coronal section of a Parkinson’s disease rat model. Dataset no2 is obtained from a whole-body adult male zebrafish section. 
 
 Zenodo link: https://zenodo.org/records/17399931
 
 ### Tutorials
 
-The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Multiplexed Molecular Imaging Data: Moran Quadrant Maps for Tissue Domain Segmentation and Colocalization Analysis" by Léonore Tideman, Felipe Moser, Jacquelyn Spathies, Katerina Djambazova, Cody Marshall, Eric Skaar, Matthew Schrag, Lukasz Migas, Jeffrey Spraggins, and Raf Van de Plas (2025). Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment, and run the following notebooks to reproduce our results. 
+The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Molecular Imaging: Moran Quadrant Maps Enable Advanced Spatial-Statistical Analysis" by Léonore Tideman, Felipe Moser, Lukasz Migas, Jacquelyn Spathies, Katerina  Djambazova, Cody Marshall, Matthew Schrag, Eric Skaar, Jeffrey Spraggins, Raf Van de Plas (2025). Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment, and run the following notebooks to reproduce our results. 
 
 Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
