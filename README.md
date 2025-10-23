@@ -20,7 +20,7 @@ pip install Moran_Imaging
 
 Download the following three imaging mass spectrometry datasets from Zenodo: Demo_rat_brain_data.pickle, which is a subset of 100 ion images of dataset no1, Zebra_fish_8_clusters_dataset.pickle, which is a subset of 174 ion images of dataset no2, and Zebra_fish_UMAP_dataset.pickle, which is a UMAP embedding of dataset no2. Dataset no1 is from the coronal section of a Parkinson’s disease rat model. Dataset no2 is from a whole-body adult male zebrafish section. 
 
-Provide link to Zenodo
+Zenodo link: https://zenodo.org/records/17399931
 
 ### Tutorials
 
