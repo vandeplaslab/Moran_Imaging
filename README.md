@@ -13,7 +13,7 @@ The Moran Imaging Python package was developed for the spatio-molecular analysis
 You can install Moran Imaging, with its mandatory dependencies, from PyPI. Our package supports Python version 3.8 and above.
 
 ```bash
-pip install Moran_Imaging
+pip install Moran_Imaging[demo]
 ```
 
 ### Data download
