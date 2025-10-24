@@ -12,7 +12,6 @@ from contextlib import suppress
 
 import numpy as np
 import scipy.sparse as sp
-from numpy.core.numeric import ComplexWarning
 
 
 def _astype_copy_false(X):
@@ -20,14 +19,14 @@ def _astype_copy_false(X):
     {ndarray, csr_matrix, csc_matrix}.astype when possible,
     otherwise don't specify.
     """
+    from scipy import __version__
     from packaging.version import parse as parse_version
 
-    sp_version = parse_version(sp.__version__)
+    sp_version = parse_version(__version__)
 
     if sp_version >= parse_version("1.1") or not sp.issparse(X):
         return {"copy": False}
-    else:
-        return {}
+    return {}
 
 
 def _is_integral_float(y):
@@ -77,14 +76,16 @@ def is_multilabel(y):
     >>> is_multilabel(np.array([[1, 0, 0]]))
     True
     """
+    from numpy.exceptions import VisibleDeprecationWarning
+
     if hasattr(y, "__array__") or isinstance(y, Sequence):
         # DeprecationWarning will be replaced by ValueError, see NEP 34
         # https://numpy.org/neps/nep-0034-infer-dtype-is-object.html
         with warnings.catch_warnings():
-            warnings.simplefilter("error", np.VisibleDeprecationWarning)
+            warnings.simplefilter("error", VisibleDeprecationWarning)
             try:
                 y = np.asarray(y)
-            except np.VisibleDeprecationWarning:
+            except VisibleDeprecationWarning:
                 # dtype=object should be provided explicitly for ragged arrays,
                 # see NEP 34
                 y = np.array(y, dtype=object)
@@ -112,6 +113,7 @@ def is_multilabel(y):
 
 def type_of_target(y):
     """Determine the type of data indicated by the target.
+
     Note that this type is the most specific type that can be inferred.
     For example:
         * ``binary`` is more specific but compatible with ``multiclass``.
@@ -546,6 +548,8 @@ def check_array(
     array_converted : object
         The converted and validated array.
     """
+    from numpy.exceptions import ComplexWarning
+
     if isinstance(array, np.matrix):
         warnings.warn(
             "np.matrix usage is deprecated in 1.0 and will raise a TypeError "
