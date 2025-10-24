@@ -64,8 +64,8 @@ dev = [
 ]
 
 [project.urls]
-homepage = "https://github.com/LEMTideman/Moran_Imaging"
-repository = "https://github.com/LEMTideman/Moran_Imaging"
+homepage = "https://github.com/vandeplaslab/Moran_Imaging"
+repository = "https://github.com/vandeplaslab/Moran_Imaging"
 
 # same as console_scripts entry point
 # [project.scripts]
