@@ -1,10 +1,10 @@
 # Moran_Imaging
 
-[![License](https://img.shields.io/pypi/l/Moran_Imaging.svg?color=green)](https://github.com/vandeplaslab/Moran_Imaging/raw/main/LICENSE)
+[![License](https://img.shields.io/pypi/l/Moran_Imaging.svg?color=green)](https://github.com/vandeplaslab/Moran_Imaging/raw/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/Moran_Imaging.svg?color=green)](https://pypi.org/project/Moran_Imaging)
 [![Python Version](https://img.shields.io/pypi/pyversions/Moran_Imaging.svg?color=green)](https://python.org)
 [![CI](https://github.com/vandeplaslab/Moran_Imaging/actions/workflows/ci.yml/badge.svg)](https://github.com/vandeplaslab/Moran_Imaging/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/vandeplaslab/Moran_Imaging/branch/main/graph/badge.svg)](https://codecov.io/gh/vandeplaslab/Moran_Imaging)
+[![codecov](https://codecov.io/gh/vandeplaslab/Moran_Imaging/branch/master/graph/badge.svg)](https://codecov.io/gh/vandeplaslab/Moran_Imaging)
 
 The Moran Imaging Python package was developed for the spatio-molecular analysis of multiplexed molecular imaging data, such as imaging mass spectrometry (IMS) data. It provides the statistical tools to identify, visualize, and quantify spatial patterns in molecular imaging data, such as Moran's I and the Moran quadrant map. It also provides user-friendly implementations of a novel tissue domain segmentation workflow, called Moran-Felsenszwalb segmentation, and of a novel colocalization-based image clustering workflow, called Moran-HOG clustering.
 

@@ -18,7 +18,7 @@ from byol_pytorch import BYOL
 from kornia.augmentation import ColorJitter, IntensityAugmentationBase2D, RandomBoxBlur
 from sklearn.preprocessing import MinMaxScaler
 from torch import Tensor
-from torchvision import models
+from torchvision.models import resnet18
 
 
 class RandomMissing(IntensityAugmentationBase2D):
@@ -90,7 +90,7 @@ def DeepION_training(input_filename, image_size, mode):
     oridata = oridata / np.sum(oridata, axis=0).reshape(1, -1)[0]
     data = MinMaxScaler().fit_transform(oridata)
 
-    resnet = models.resnet18(pretrained=True).cuda()
+    resnet = resnet18(pretrained=True).cuda()
 
     if mode == "COL":
         argument_fn = torch.nn.Sequential(
@@ -150,8 +150,8 @@ def DeepION_predicting(input_filename, image_size, mode):
     data = MinMaxScaler().fit_transform(oridata)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")  # new
-    resnet = models.resnet18(pretrained=True).to(device)  # new
-    # resnet = models.resnet18(pretrained=True).cuda()
+    resnet = resnet18(pretrained=True).to(device)  # new
+    # resnet = resnet18(pretrained=True).cuda()
 
     resnet.load_state_dict(torch.load(mode + "_ResNet18_params.pth"))
     resnet = torch.nn.Sequential(*list(resnet.children())[:-1])

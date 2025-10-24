@@ -14,7 +14,7 @@ import torch
 import torch.nn.functional as functional
 
 from moran_imaging.cae import CAE
-from moran_imaging.cnn_clustering import cnnClust
+from moran_imaging.cnn_clustering import CNNClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
 
 
@@ -92,7 +92,7 @@ class DeepClustering:
 
     def train(self):
         cae = CAE(train_mode=True, height=self.height, width=self.width).to(self.device)
-        clust = cnnClust(num_clust=self.num_cluster, height=self.height, width=self.width).to(self.device)
+        clust = CNNClust(num_clust=self.num_cluster, height=self.height, width=self.width).to(self.device)
 
         model_params = list(cae.parameters()) + list(clust.parameters())
         optimizer = torch.optim.RMSprop(params=model_params, lr=0.001, weight_decay=0)

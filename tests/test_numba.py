@@ -1,4 +1,4 @@
-from moran_imaging._numba import njit, prange, boolean
+from moran_imaging._numba import boolean, njit, prange
 
 
 def test_njit_decorator():
@@ -8,6 +8,7 @@ def test_njit_decorator():
 
     assert add(2, 3) == 5
     assert add(-1, 1) == 0
+
 
 def test_prange_function():
     @njit
@@ -19,6 +20,7 @@ def test_prange_function():
 
     assert sum_range(5) == 10  # 0 + 1 + 2 + 3 + 4
     assert sum_range(10) == 45  # 0 + 1 + ... + 9
+
 
 def test_boolean_type():
     @njit

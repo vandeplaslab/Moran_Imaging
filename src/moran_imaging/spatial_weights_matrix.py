@@ -6,7 +6,7 @@ import warnings
 
 import numpy as np
 import pandas
-import scipy.sparse
+import scipy.sparse as sp
 from joblib import Parallel, delayed
 from scipy.sparse.csgraph import connected_components
 
@@ -355,7 +355,7 @@ class SpatialWeightsMatrix:
         row = np.array(row)
         col = np.array(col)
         data = np.array(data)
-        s = scipy.sparse.csr_matrix((data, (row, col)), shape=(self.n, self.n))
+        s = sp.csr_matrix((data, (row, col)), shape=(self.n, self.n))
         return s
 
     @property
