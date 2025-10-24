@@ -679,10 +679,7 @@ class SpatialWeightsMatrix:
             for j, neigh_list in list(self.neighbors.items()):
                 self.__neighbors_0[j] = [id2i[neigh] for neigh in neigh_list]
             self._cache["neighbors_0"] = self.__neighbors_0
-
-        neighbor_list = self.__neighbors_0
-
-        return neighbor_list
+        return self.__neighbors_0
 
     def get_transform(self):
         """Getter for transform property.
@@ -799,10 +796,9 @@ class SpatialWeightsMatrix:
         ids = np.nonzero(wd)
         if len(ids[0]) == 0:
             return []
-        else:
-            ijs = list(zip(ids[0], ids[1]))
-            ijs.sort()
-            return ijs
+        ijs = list(zip(ids[0], ids[1]))
+        ijs.sort()
+        return ijs
 
     def full(self):
         """Generate a full numpy.ndarray of the spatial weights matrix.
@@ -822,7 +818,6 @@ class SpatialWeightsMatrix:
         keys = list(self.neighbors.keys())
         if self.id_order:
             keys = self.id_order
-
         return (wfull, keys)
 
     def to_adjlist(self, focal_col="focal", neighbor_col="neighbor", weight_col="weight"):

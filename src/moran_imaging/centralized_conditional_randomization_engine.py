@@ -187,7 +187,6 @@ def crand(
     low_extreme = (permutations - larger) < larger
     larger[low_extreme] = permutations - larger[low_extreme]
     p_sim = (larger + 1.0) / (permutations + 1.0)
-
     return p_sim, rlocals
 
 

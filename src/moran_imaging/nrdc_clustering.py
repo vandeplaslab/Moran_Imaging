@@ -18,7 +18,7 @@ from moran_imaging.cnn_clustering import cnnClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
 
 
-class Deep_Clustering:
+class DeepClustering:
     def __init__(
         self,
         ims_dataset,
@@ -219,3 +219,7 @@ class Deep_Clustering:
         # Reshape data
         image = np.reshape(pixel_grid, [self.height, self.width])
         return image
+
+
+# Kept the backward compatibility
+Deep_Clustering = DeepClustering

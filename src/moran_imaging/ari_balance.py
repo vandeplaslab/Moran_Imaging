@@ -133,7 +133,6 @@ def contingency_matrix(labels_true, labels_pred, *, reweigh=False, eps=None, spa
         counts_norm = counts_sum_per_class / target
         sparsefuncs.inplace_row_scale(contingency, 1 / counts_norm)
         contingency = contingency.astype(np.int64)
-
     return contingency
 
 

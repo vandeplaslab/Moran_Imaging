@@ -56,7 +56,6 @@ def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_ord
     pos_neg = np.logical_and(z_pos, lag_neg)
     quadrant_labels = pos_pos * 1.0 + neg_pos * 2.0 + neg_neg * 3.0 + pos_neg * 4.0
     quadrant_labels *= mask
-
     return local_moran_i, quadrant_labels
 
 
