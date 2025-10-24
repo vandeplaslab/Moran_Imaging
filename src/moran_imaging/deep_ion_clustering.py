@@ -1,7 +1,9 @@
 # DeepION clustering workflow
 
-# Paper: "DeepION: A Deep Learning-Based Low-Dimensional Representation Model of Ion Images for Mass Spectrometry Imaging" by Lei Guo,
-# Chengyi Xie, Rui Miao, Jingjing Xu, Xiangnan Xu, Jiacheng Fang, Xiaoxiao Wang, Wuping Liu, Xiangwen Liao, Jianing Wang, Jiyang Dong,
+# Paper: "DeepION: A Deep Learning-Based Low-Dimensional Representation Model of Ion Images for Mass Spectrometry
+#  Imaging" by Lei Guo,
+# Chengyi Xie, Rui Miao, Jingjing Xu, Xiangnan Xu, Jiacheng Fang, Xiaoxiao Wang, Wuping Liu, Xiangwen Liao,
+# Jianing Wang, Jiyang Dong,
 # and Zongwei Cai. 2024, Analytical Chemistry, DOI: 10.1021/acs.analchem.3c05002.
 
 # Original code by Lei Guo: https://github.com/gankLei-X/DeepION/tree/main
@@ -13,8 +15,7 @@ import numpy as np
 import torch
 import torchvision.transforms as transforms
 from byol_pytorch import BYOL
-from kornia.augmentation import *
-from kornia.augmentation._2d.intensity.base import IntensityAugmentationBase2D
+from kornia.augmentation import ColorJitter, IntensityAugmentationBase2D, RandomBoxBlur
 from sklearn.preprocessing import MinMaxScaler
 from torch import Tensor
 from torchvision import models

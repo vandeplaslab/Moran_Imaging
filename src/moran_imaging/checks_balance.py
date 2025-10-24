@@ -20,6 +20,10 @@ def _astype_copy_false(X):
     {ndarray, csr_matrix, csc_matrix}.astype when possible,
     otherwise don't specify.
     """
+    from packaging.version import parse as parse_version
+
+    sp_version = parse_version(sp.__version__)
+
     if sp_version >= parse_version("1.1") or not sp.issparse(X):
         return {"copy": False}
     else:

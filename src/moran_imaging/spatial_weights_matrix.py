@@ -64,8 +64,10 @@ def define_lattice_spatial_weights_matrix(
 ) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a regular lattice.
-    Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
-    Observations are row ordered (first ncols observations are in row 0, next ncols in row 1, next ncols in row 2, etc).
+    Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W
+    & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
+    Observations are row ordered (first ncols observations are in row 0, next ncols in row 1, next ncols in row 2,
+     etc).
 
     Inputs
     ----------
@@ -227,9 +229,11 @@ class SpatialWeightsMatrix:
     diagW2: Diagonal of WW.
     diagWtW: Diagonal of W'W.
     diagWtW_WW: Diagonal of W'W + WW.
-    histogram: Cardinality histogram as a dictionary where key is the id and value is the number of neighbors for that unit.
+    histogram: Cardinality histogram as a dictionary where key is the id and value is the number of neighbors for
+     that unit.
     id2i: Dictionary where the key is an ID and the value is that ID's index in W.id_order.
-    id_order: Returns the ids for the observations in the order in which they would be encountered if iterating over the weights.
+    id_order: Returns the ids for the observations in the order in which they would be encountered if iterating over
+     the weights.
     id_order_set: Returns True if user has set id_order, False if not.
     islands: List of ids without any neighbors.
     max_neighbors: Largest number of neighbors.
@@ -237,7 +241,8 @@ class SpatialWeightsMatrix:
     min_neighbors: Minimum number of neighbors.
     n: Number of units.
     n_components: Store whether the adjacency matrix is fully connected.
-    neighbor_offsets: Given the current id_order, neighbor_offsets[id] is the offsets of the id's neighbors in id_order.
+    neighbor_offsets: Given the current id_order, neighbor_offsets[id] is the offsets of the id's neighbors in
+     id_order.
     nonzero: Number of nonzero weights.
     pct_nonzero: Percentage of nonzero weights.
     s0: s0=\sum_i \sum_j w_{i,j}
@@ -308,7 +313,11 @@ class SpatialWeightsMatrix:
 
     @property
     def sparse(self):
-        """Sparse matrix object. For any matrix manipulations required for w, w.sparse should be used. This is based on scipy.sparse."""
+        """
+        Sparse matrix object. For any matrix manipulations required for w, w.sparse should be used.
+
+        This is based on scipy.sparse.
+        """
         if "sparse" not in self._cache:
             self._sparse = self._build_sparse()
             self._cache["sparse"] = self._sparse
