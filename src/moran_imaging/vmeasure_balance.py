@@ -1,4 +1,4 @@
-""" Balanced homogeneity, completeness, and V-measure """
+"""Balanced homogeneity, completeness, and V-measure."""
 # Original code from https://github.com/hsmaan/balanced-clustering
 # Paper: "Characterizing the impacts of dataset imbalance on single-cell data integration"
 # by Maan, Zhang, Yu, Geuenich, Campbell and Wang, Nature Biotechnology, 2024.
@@ -6,12 +6,12 @@
 
 import numpy as np
 import scipy.sparse as sp
-from moran_imaging.checks_balance import check_clusterings
-from moran_imaging.utils_balance import entropy, mutual_info_score, contingency_matrix
 
-def balanced_homogeneity_completeness_v_measure(
-    labels_true, labels_pred, *, beta=1.0, reweigh=True
-):
+from moran_imaging.checks_balance import check_clusterings
+from moran_imaging.utils_balance import contingency_matrix, entropy, mutual_info_score
+
+
+def balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
     """Compute balanced the homogeneity, completeness, and V-Measure scores.
     Those metrics are based on normalized conditional entropy measures of
     the clustering labeling to evaluate given the knowledge of a Ground
@@ -34,7 +34,8 @@ def balanced_homogeneity_completeness_v_measure(
     The balanced homogeneity, completeness, and v-measure values are obtained by
     reweighing the contingency table for all true label marginals, such that they
     sum to the same nummber, while preserving the total number of samples.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         ground truth class labels to be used as a reference
@@ -50,6 +51,7 @@ def balanced_homogeneity_completeness_v_measure(
         such that they all have equal membership. The total number of samples
         is preserved with a round-off error. If 'False', this reverts the
         balanced to the original implementation for all measures.
+
     Returns
     -------
     balanced_homogeneity : float
@@ -63,25 +65,19 @@ def balanced_homogeneity_completeness_v_measure(
 
     if len(labels_true) == 0:
         return 1.0, 1.0, 1.0
-    
-    contingency = contingency_matrix(
-        labels_true, labels_pred, reweigh=reweigh, sparse=True
-    )
+
+    contingency = contingency_matrix(labels_true, labels_pred, reweigh=reweigh, sparse=True)
     MI = mutual_info_score(None, None, contingency=contingency)
 
     # Recalculate labels_true and labels_pred if reweigh is True to
     # factor in the reweighting based on the true class frequencies.
-    # These won't preserve order but this is fine since entropy is 
+    # These won't preserve order but this is fine since entropy is
     # invariant to order
     if reweigh is True:
-        true_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis = 1)))
-        pred_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis = 0)))
-        labels_true = np.repeat(
-            np.arange(len(true_sums)), true_sums
-        )
-        labels_pred = np.repeat(
-            np.arange(len(pred_sums)), pred_sums
-        )
+        true_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis=1)))
+        pred_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis=0)))
+        labels_true = np.repeat(np.arange(len(true_sums)), true_sums)
+        labels_pred = np.repeat(np.arange(len(pred_sums)), pred_sums)
 
     entropy_C = entropy(labels_true)
     entropy_K = entropy(labels_pred)
@@ -92,12 +88,7 @@ def balanced_homogeneity_completeness_v_measure(
     if homogeneity + completeness == 0.0:
         v_measure_score = 0.0
     else:
-        v_measure_score = (
-            (1 + beta)
-            * homogeneity
-            * completeness
-            / (beta * homogeneity + completeness)
-        )
+        v_measure_score = (1 + beta) * homogeneity * completeness / (beta * homogeneity + completeness)
 
     return homogeneity, completeness, v_measure_score
 
@@ -115,7 +106,8 @@ def balanced_homogeneity(labels_true, labels_pred, reweigh=True):
     The balanced homogeneity is obtained by reweighing the contingency table for
     all true label marginals, such that they sum to the same nummber, while
     preserving the total number of samples.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         ground truth class labels to be used as a reference
@@ -126,19 +118,19 @@ def balanced_homogeneity(labels_true, labels_pred, reweigh=True):
         such that they all have equal membership. The total number of samples
         is preserved with a round-off error. If 'False', this reverts the
         balanced homogeneity to the original homogeneity implementation.
+
     Returns
     -------
     balanced_homogeneity : float
        score between 0.0 and 1.0. 1.0 stands for perfectly homogeneous labeling
+
     References
     ----------
     .. [1] `Andrew Rosenberg and Julia Hirschberg, 2007. V-Measure: A
        conditional entropy-based external cluster evaluation measure
        <https://aclweb.org/anthology/D/D07/D07-1043.pdf>`_
     """
-    return balanced_homogeneity_completeness_v_measure(
-        labels_true, labels_pred, reweigh=reweigh
-    )[0]
+    return balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, reweigh=reweigh)[0]
 
 
 def balanced_completeness(labels_true, labels_pred, reweigh=True):
@@ -154,7 +146,8 @@ def balanced_completeness(labels_true, labels_pred, reweigh=True):
     The balanced completeness is obtained by reweighing the contingency table for
     all true label marginals, such that they sum to the same nummber, while
     preserving the total number of samples.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         ground truth class labels to be used as a reference
@@ -165,19 +158,19 @@ def balanced_completeness(labels_true, labels_pred, reweigh=True):
             such that they all have equal membership. The total number of samples
             is preserved with a round-off error. If 'False', this reverts the
             balanced completeness to the original completeness implementation.
+
     Returns
     -------
     balanced_completeness : float
        score between 0.0 and 1.0. 1.0 stands for perfectly complete labeling
+
     References
     ----------
     .. [1] `Andrew Rosenberg and Julia Hirschberg, 2007. V-Measure: A
        conditional entropy-based external cluster evaluation measure
        <https://aclweb.org/anthology/D/D07/D07-1043.pdf>`_
     """
-    return balanced_homogeneity_completeness_v_measure(
-        labels_true, labels_pred, reweigh=reweigh
-    )[1]
+    return balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, reweigh=reweigh)[1]
 
 
 def balanced_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
@@ -194,7 +187,8 @@ def balanced_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
     The balanced V-measure is obtained by reweighing the contingency table for
     all true label marginals, such that they sum to the same nummber, while
     preserving the total number of samples.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         ground truth class labels to be used as a reference
@@ -210,16 +204,16 @@ def balanced_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
             such that they all have equal membership. The total number of samples
             is preserved with a round-off error. If 'False', this reverts the
             balanced V-measure to the original V-measure implementation.
+
     Returns
     -------
     balanced_v_measure : float
        score between 0.0 and 1.0. 1.0 stands for perfectly complete labeling
+
     References
     ----------
     .. [1] `Andrew Rosenberg and Julia Hirschberg, 2007. V-Measure: A
        conditional entropy-based external cluster evaluation measure
        <https://aclweb.org/anthology/D/D07/D07-1043.pdf>`_
     """
-    return balanced_homogeneity_completeness_v_measure(
-        labels_true, labels_pred, beta=beta, reweigh=reweigh
-    )[2]
+    return balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, beta=beta, reweigh=reweigh)[2]

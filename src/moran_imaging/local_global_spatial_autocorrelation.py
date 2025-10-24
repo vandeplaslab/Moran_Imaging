@@ -5,6 +5,7 @@ from __future__ import annotations
 import typing as ty
 
 import numpy as np
+
 from moran_imaging.centralized_conditional_randomization_engine import crand, moran_local_crand
 
 if ty.TYPE_CHECKING:

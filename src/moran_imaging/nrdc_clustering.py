@@ -33,8 +33,7 @@ class Deep_Clustering:
         use_gpu=True,
         random_seed=0,
     ):
-
-        super(Deep_Clustering, self).__init__()
+        super().__init__()
 
         self.label_path = label_path
         self.num_cluster = num_cluster
@@ -78,10 +77,7 @@ class Deep_Clustering:
     def get_batch(train_image, batch_size, train_label=None):
         sample_id = sample(range(len(train_image)), batch_size)
         batch_image = train_image[sample_id,]
-        if train_label is None:
-            batch_label = None
-        else:
-            batch_label = train_label[sample_id,]
+        batch_label = None if train_label is None else train_label[sample_id,]
         return batch_image, batch_label, sample_id
 
     @staticmethod
@@ -95,7 +91,6 @@ class Deep_Clustering:
         return batch_image, batch_label
 
     def train(self):
-
         cae = CAE(train_mode=True, height=self.height, width=self.width).to(self.device)
         clust = cnnClust(num_clust=self.num_cluster, height=self.height, width=self.width).to(self.device)
 
@@ -105,7 +100,7 @@ class Deep_Clustering:
 
         uu = 98
         ll = 46
-        loss_list = list()
+        loss_list = []
 
         torch.manual_seed(self.random_seed)
         if self.use_gpu:
@@ -113,10 +108,9 @@ class Deep_Clustering:
             torch.backends.cudnn.deterministic = True
 
         # Pretraining of CAE only
-        for epoch in range(0, 11):
-            losses = list()
-            for it in range(501):
-
+        for _epoch in range(0, 11):
+            losses = []
+            for _it in range(501):
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
@@ -129,15 +123,12 @@ class Deep_Clustering:
                 optimizer.step()
                 losses.append(loss.item())
 
-            print(f"Pretraining Epoch: {epoch} Loss: {sum(losses) / len(losses):.6f}")
-
         optimizer = torch.optim.RMSprop(params=model_params, lr=0.01, weight_decay=0.0)
 
         # Full model training
-        for epoch in range(0, 11):
-
-            losses = list()
-            losses2 = list()
+        for _epoch in range(0, 11):
+            losses = []
+            losses2 = []
 
             train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
@@ -153,8 +144,7 @@ class Deep_Clustering:
             # Similarity as defined in formula 2 of the paper
             sim_mat = torch.matmul(features, torch.transpose(features, 0, 1))
 
-            for it in range(31):
-
+            for _it in range(31):
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
@@ -203,12 +193,11 @@ class Deep_Clustering:
 
             uu = uu - 1
             ll = ll + 4
-            print(f"Training Epoch: {epoch} Loss: {sum(losses) / len(losses):.6f}")
         return cae, clust
 
     def inference(self, cae, clust):
         with torch.no_grad():
-            pred_label = list()
+            pred_label = []
 
             test_x = torch.Tensor(self.image_data).to(self.device)
             test_x = test_x.reshape((-1, 1, self.height, self.width))

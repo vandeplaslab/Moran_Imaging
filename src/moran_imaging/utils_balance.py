@@ -3,17 +3,19 @@
 # by Maan, Zhang, Yu, Geuenich, Campbell and Wang, Nature Biotechnology, 2024.
 # DOI: 10.1038/s41587-023-02097-9
 
-import numpy as np
 from math import log
+
+import numpy as np
 import scipy.sparse as sp
 from sklearn.utils import sparsefuncs
-from moran_imaging.checks_balance import check_clusterings, check_array
 
-def contingency_matrix(
-    labels_true, labels_pred, *, reweigh=False, eps=None, sparse=False, dtype=np.int64
-):
+from moran_imaging.checks_balance import check_array, check_clusterings
+
+
+def contingency_matrix(labels_true, labels_pred, *, reweigh=False, eps=None, sparse=False, dtype=np.int64):
     """Build a contingency matrix describing the relationship between labels.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         Ground truth class labels to be used as a reference.
@@ -34,6 +36,7 @@ def contingency_matrix(
     dtype : numeric type, default=np.int64
         Output dtype. Ignored if `eps` is not `None`.
         .. versionadded:: 0.24
+
     Returns
     -------
     contingency : {array-like, sparse}, shape=[n_classes_true, n_classes_pred]
@@ -44,7 +47,6 @@ def contingency_matrix(
         will be float.
         Will be a ``sklearn.sparse.csr_matrix`` if ``sparse=True``.
     """
-
     if eps is not None and sparse:
         raise ValueError("Cannot set 'eps' when sparse=True")
 
@@ -91,7 +93,8 @@ def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
     :math:`C_{00}`, false negatives is :math:`C_{10}`, true positives is
     :math:`C_{11}` and false positives is :math:`C_{01}`.
     Read more in the :ref:`User Guide <pair_confusion_matrix>`.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : array-like of shape (n_samples,), dtype=integral
         Ground truth class labels to be used as a reference.
@@ -101,6 +104,7 @@ def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
         if `True`, reweighs the contingency table based on the true labels
         such that they all have equal membership. The total number of samples
         is preserved with a round-off error.
+
     Returns
     -------
     C : ndarray of shape (2, 2), dtype=np.int64
@@ -108,6 +112,7 @@ def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
     ------
     Note that the matrix is not symmetric.
     ------
+
     References
     ----------
     .. L. Hubert and P. Arabie, Comparing Partitions, Journal of
@@ -117,9 +122,7 @@ def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
     n_samples = np.int64(labels_true.shape[0])
 
     # Computation using the contingency data
-    contingency = contingency_matrix(
-        labels_true, labels_pred, reweigh=reweigh, sparse=True, dtype=np.int64
-    )
+    contingency = contingency_matrix(labels_true, labels_pred, reweigh=reweigh, sparse=True, dtype=np.int64)
     n_c = np.ravel(contingency.sum(axis=1))
     n_k = np.ravel(contingency.sum(axis=0))
     sum_squares = (contingency.data**2).sum()
@@ -130,12 +133,15 @@ def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
     C[0, 0] = n_samples**2 - C[0, 1] - C[1, 0] - sum_squares
     return C
 
+
 def entropy(labels):
     """Calculates the entropy for a labeling.
-    Parameters
+
+    Parameters.
     ----------
     labels : int array, shape = [n_samples]
         The labels
+
     Notes
     -----
     The logarithm used is the natural logarithm (base-e).
@@ -150,8 +156,9 @@ def entropy(labels):
     # possible loss of precision
     return -np.sum((pi / pi_sum) * (np.log(pi) - log(pi_sum)))
 
+
 def mutual_info_score(labels_true, labels_pred, *, contingency=None):
-    """Mutual Information between two clusterings.
+    r"""Mutual Information between two clusterings.
     The Mutual Information is a measure of the similarity between two labels
     of the same data. Where :math:`|U_i|` is the number of the samples
     in cluster :math:`U_i` and :math:`|V_j|` is the number of the
@@ -169,7 +176,8 @@ def mutual_info_score(labels_true, labels_pred, *, contingency=None):
     independent label assignments strategies on the same dataset when the
     real ground truth is not known.
     Read more in the :ref:`User Guide <mutual_info_score>`.
-    Parameters
+
+    Parameters.
     ----------
     labels_true : int array, shape = [n_samples]
         A clustering of the data into disjoint subsets, called :math:`U` in
@@ -182,14 +190,17 @@ def mutual_info_score(labels_true, labels_pred, *, contingency=None):
         A contingency matrix given by the :func:`contingency_matrix` function.
         If value is ``None``, it will be computed, otherwise the given value is
         used, with ``labels_true`` and ``labels_pred`` ignored.
+
     Returns
     -------
     mi : float
        Mutual information, a non-negative value, measured in nats using the
        natural logarithm.
+
     Notes
     -----
     The logarithm used is the natural logarithm (base-e).
+
     See Also
     --------
     adjusted_mutual_info_score : Adjusted against chance Mutual Information.
@@ -221,13 +232,8 @@ def mutual_info_score(labels_true, labels_pred, *, contingency=None):
     log_contingency_nm = np.log(nz_val)
     contingency_nm = nz_val / contingency_sum
     # Don't need to calculate the full outer product, just for non-zeroes
-    outer = pi.take(nzx).astype(np.int64, copy=False) * pj.take(nzy).astype(
-        np.int64, copy=False
-    )
+    outer = pi.take(nzx).astype(np.int64, copy=False) * pj.take(nzy).astype(np.int64, copy=False)
     log_outer = -np.log(outer) + log(pi.sum()) + log(pj.sum())
-    mi = (
-        contingency_nm * (log_contingency_nm - log(contingency_sum))
-        + contingency_nm * log_outer
-    )
+    mi = contingency_nm * (log_contingency_nm - log(contingency_sum)) + contingency_nm * log_outer
     mi = np.where(np.abs(mi) < np.finfo(mi.dtype).eps, 0.0, mi)
     return np.clip(mi.sum(), 0.0, None)

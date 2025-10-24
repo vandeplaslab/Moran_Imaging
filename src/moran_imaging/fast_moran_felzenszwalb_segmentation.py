@@ -1,5 +1,5 @@
 # Parallelized implementation of the Moran-HOG segmentation workflow
-# Refer to Section 2.2 of the Supplementary Material 
+# Refer to Section 2.2 of the Supplementary Material
 # By Felipe Moser
 
 import numpy as np
@@ -8,9 +8,10 @@ import scipy.stats
 import skimage.segmentation
 import sklearn.cluster
 
+
 def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_order=5):
     """
-    Compute the local Moran I statistic for each pixel in an image
+    Compute the local Moran I statistic for each pixel in an image.
 
     Parameters
     ----------
@@ -34,7 +35,6 @@ def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_ord
     quadrant_labels : np.ndarray of shape (n_channels, height, width)
         The quadrant label for each pixel in the image
     """
-
     # Get the local Moran I
     neighbourhood_kernel = get_neighbourhood_kernel(neighbourhood_type, neighbourhood_order)
     neighbourhood_kernel = np.tile(neighbourhood_kernel, (image.shape[0], 1, 1))
@@ -69,10 +69,10 @@ def get_moran_felzenszwalb_segmentation(
     felzenszwalb_scale=50,
     felzenszwalb_sigma=0.2,
     felzenszwalb_min_size=100,
-    subset_features = [],
+    subset_features=None,
 ):
     """
-    Segment an image using the Moran I statistic and the Felzenszwalb algorithm
+    Segment an image using the Moran I statistic and the Felzenszwalb algorithm.
 
     Parameters
     ----------
@@ -88,16 +88,22 @@ def get_moran_felzenszwalb_segmentation(
     neighbour_order [optional] : int
         The order of the neighbourhood. Default is 5
     """
+    if subset_features is None:
+        subset_features = []
     if not subset_features:
         # Get the local Moran I and quadrant labels for all m/z bins
         _, quadrant_labels = get_local_moran_i(image, mask, neighbourhood_type, neighbourhood_order)
-    else: 
+    else:
         # Get the local Moran I and quadrant labels for a subset of m/z bins
         _, quadrant_labels = get_local_moran_i(image[subset_features, :], mask, neighbourhood_type, neighbourhood_order)
 
     # Segment the image using the Felzenszwalb algorithm on the quadrant labels
     felzenszwalb_segmentation = skimage.segmentation.felzenszwalb(
-        quadrant_labels, scale=felzenszwalb_scale, sigma=felzenszwalb_sigma, min_size=felzenszwalb_min_size, channel_axis=0
+        quadrant_labels,
+        scale=felzenszwalb_scale,
+        sigma=felzenszwalb_sigma,
+        min_size=felzenszwalb_min_size,
+        channel_axis=0,
     )
 
     # k-means clustering
@@ -118,7 +124,7 @@ def get_moran_felzenszwalb_segmentation(
 
 def get_neighbourhood_kernel(neighbourhood_type, neighbourhood_order):
     """
-    Get a neighbourhood kernel for a given neighbourhood type and order
+    Get a neighbourhood kernel for a given neighbourhood type and order.
 
     Parameters
     ----------
@@ -133,7 +139,6 @@ def get_neighbourhood_kernel(neighbourhood_type, neighbourhood_order):
     w : np.ndarray of shape (2 * neighbourhood_order + 1, 2 * neighbourhood_order + 1)
         The neighbourhood kernel
     """
-
     if neighbourhood_type.lower() == "queen":
         w = np.ones((2 * neighbourhood_order + 1, 2 * neighbourhood_order + 1))
         w[neighbourhood_order, neighbourhood_order] = 0

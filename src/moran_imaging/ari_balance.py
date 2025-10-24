@@ -1,4 +1,4 @@
-"""Balanced adjusted Rand index"""
+"""Balanced adjusted Rand index."""
 # Original code from https://github.com/hsmaan/balanced-clustering
 # Paper: "Characterizing the impacts of dataset imbalance on single-cell data integration"
 # by Maan, Zhang, Yu, Geuenich, Campbell and Wang, Nature Biotechnology, 2024.

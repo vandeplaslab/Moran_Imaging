@@ -40,10 +40,7 @@ def define_spatial_weights_matrix(
     """
     # Convert boolean background mask to list of missing value indices
     # Pixels with missing values become isolates/islands of the spatial weights matrix
-    if len(background_mask) == 0:
-        background_index = []
-    else:
-        background_index = np.argwhere(background_mask==True)[:,0].tolist()
+    background_index = [] if len(background_mask) == 0 else np.argwhere(background_mask is True)[:, 0].tolist()
 
     # Define 1st order Queen or Rook contiguity matrix
     if contiguity == "Queen":
