@@ -44,4 +44,5 @@ Run the following notebooks to reproduce the results of Table 1 of the main manu
 
 ### Citation
 
-If you reuse our code, please cite our work **provide link to preprint**. 
+If you reuse our code, please cite our work: "Spatial Dependence and Heterogeneity in Molecular Imaging: Moran Quadrant Maps Enable Advanced Spatial-Statistical Analysis" by Tideman et al. (October 2025).
+Link to preprint: https://www.biorxiv.org/content/10.1101/2025.10.27.684518v1. 
