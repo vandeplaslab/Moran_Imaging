@@ -45,14 +45,3 @@ Run the following notebooks to reproduce the results of Table 1 of the main manu
 ### Citation
 
 If you reuse our code, please cite our work **provide link to preprint**. 
-For academic publications, please use the following Bibtex entry:
-
-**Insert a bibtex-like citation hereunder**
-
-	@article{polanski2019bbknn,
-	  title={BBKNN: Fast Batch Alignment of Single Cell Transcriptomes},
-	  author={Pola{\'n}ski, Krzysztof and Young, Matthew D and Miao, Zhichao and Meyer, Kerstin B and Teichmann, Sarah A and Park, Jong-Eun},
-	  doi={10.1093/bioinformatics/btz625},
-	  journal={Bioinformatics},
-	  year={2019}
-	}
