@@ -15,7 +15,7 @@ def define_spatial_weights_matrix(
     image_shape: tuple[int, int],
     contiguity: str = "Queen",
     neighbourhood_order: int = 1,
-    background_mask: np.ndarray = np.array([]),
+    background_mask: np.ndarray | None = None,
     with_lower_order: bool = False,
 ):
     """
@@ -38,9 +38,13 @@ def define_spatial_weights_matrix(
     -------
     W : Contiguity-based spatial weights matrix object.
     """
+    if background_mask is None:
+        background_mask = np.array([])
+    background_mask = np.asarray(background_mask)
+
     # Convert boolean background mask to list of missing value indices
     # Pixels with missing values become isolates/islands of the spatial weights matrix
-    background_index = [] if len(background_mask) == 0 else np.argwhere(background_mask is True)[:, 0].tolist()
+    background_index = [] if len(background_mask) == 0 else np.argwhere(background_mask)[:, 0].tolist()
 
     # Define 1st order Queen or Rook contiguity matrix
     if contiguity == "Queen":

@@ -174,6 +174,8 @@ def type_of_target(y):
     >>> type_of_target(np.array([[0, 1], [1, 1]]))
     'multilabel-indicator'
     """
+    from numpy.exceptions import VisibleDeprecationWarning
+
     valid = (isinstance(y, Sequence) or sp.issparse(y) or hasattr(y, "__array__")) and not isinstance(y, str)
 
     if not valid:
@@ -189,10 +191,10 @@ def type_of_target(y):
     # DeprecationWarning will be replaced by ValueError, see NEP 34
     # https://numpy.org/neps/nep-0034-infer-dtype-is-object.html
     with warnings.catch_warnings():
-        warnings.simplefilter("error", np.VisibleDeprecationWarning)
+        warnings.simplefilter("error", VisibleDeprecationWarning)
         try:
             y = np.asarray(y)
-        except np.VisibleDeprecationWarning:
+        except VisibleDeprecationWarning:
             # dtype=object should be provided explicitly for ragged arrays,
             # see NEP 34
             y = np.asarray(y, dtype=object)
