@@ -72,7 +72,7 @@ jobs:
 
   deploy_test:
     name: Deploy to PyPI (test)
-    needs: test
+    needs: [test, check-manifest]
     if: success() && startsWith(github.ref, 'refs/tags/') && github.event_name != 'schedule'
     runs-on: ubuntu-latest
 
