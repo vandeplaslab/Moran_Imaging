@@ -9,7 +9,7 @@ import warnings
 
 import numpy as np
 
-from moran_imaging._numba import boolean, njit, prange
+from moran_imaging._numba import njit, prange
 
 __all__ = ["crand"]
 
@@ -513,7 +513,7 @@ def parallel_crand(
 
 @njit(fastmath=False)
 def prepare_univariate(i, z, permuted_ids, weights_i):
-    mask = np.ones_like(z, dtype=boolean)
+    mask = np.ones_like(z, dtype=np.bool_)
     mask[i] = False
     z_no_i = z[mask]
     cardinality = len(weights_i)
