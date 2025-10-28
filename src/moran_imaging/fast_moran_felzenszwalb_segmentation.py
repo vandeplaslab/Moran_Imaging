@@ -1,6 +1,10 @@
 # Parallelized implementation of the Moran-HOG segmentation workflow
 # Refer to Section 2.2 of the Supplementary Material
 # By Felipe Moser
+from __future__ import annotations
+
+import warnings
+from typing import TYPE_CHECKING
 
 import numpy as np
 import scipy.ndimage
@@ -8,8 +12,13 @@ import scipy.stats
 import skimage.segmentation
 import sklearn.cluster
 
+if TYPE_CHECKING:
+    from moran_imaging._typing import NeighbourhoodType
 
-def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_order=5):
+
+def get_local_moran_i(
+    image: np.ndarray, mask: np.ndarray, neighbourhood_type: NeighbourhoodType = "queen", neighbourhood_order: int = 5
+):
     """
     Compute the local Moran I statistic for each pixel in an image.
 
@@ -21,10 +30,10 @@ def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_ord
     mask : np.ndarray of shape (height, width)
         A boolean mask indicating the pixels to consider in the analysis
 
-    neighbour_type [optional] : str
+    neighbourhood_type [optional] : NeighbourhoodType
         The type of neighbourhood to consider. Either "Queen" or "Rook". Default is "Queen"
 
-    neighbour_order [optional] : int
+    neighbourhood_order [optional] : int
         The order of the neighbourhood. Default is 5
 
     Returns
@@ -60,15 +69,15 @@ def get_local_moran_i(image, mask, neighbourhood_type="queen", neighbourhood_ord
 
 
 def get_moran_felzenszwalb_segmentation(
-    image,
-    mask,
-    n_clusters,
-    neighbourhood_type="queen",
-    neighbourhood_order=5,
-    felzenszwalb_scale=50,
-    felzenszwalb_sigma=0.2,
-    felzenszwalb_min_size=100,
-    subset_features=None,
+    image: np.ndarray,
+    mask: np.ndarray,
+    n_clusters: int,
+    neighbourhood_type: NeighbourhoodType = "queen",
+    neighbourhood_order: int = 5,
+    felzenszwalb_scale: float = 50,
+    felzenszwalb_sigma: float = 0.2,
+    felzenszwalb_min_size: int = 100,
+    subset_features: list[int] | None = None,
 ):
     """
     Segment an image using the Moran I statistic and the Felzenszwalb algorithm.
@@ -81,10 +90,10 @@ def get_moran_felzenszwalb_segmentation(
     mask : np.ndarray of shape (height, width)
         A boolean mask indicating the pixels to consider in the analysis
 
-    neighbour_type [optional] : str
+    neighbourhood_type [optional] : NeighbourhoodType
         The type of neighbourhood to consider. Either "Queen" or "Rook". Default is "Queen"
 
-    neighbour_order [optional] : int
+    neighbourhood_order [optional] : int
         The order of the neighbourhood. Default is 5
     """
     if subset_features is None:
@@ -97,13 +106,15 @@ def get_moran_felzenszwalb_segmentation(
         _, quadrant_labels = get_local_moran_i(image[subset_features, :], mask, neighbourhood_type, neighbourhood_order)
 
     # Segment the image using the Felzenszwalb algorithm on the quadrant labels
-    felzenszwalb_segmentation = skimage.segmentation.felzenszwalb(
-        quadrant_labels,
-        scale=felzenszwalb_scale,
-        sigma=felzenszwalb_sigma,
-        min_size=felzenszwalb_min_size,
-        channel_axis=0,
-    )
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", RuntimeWarning)
+        felzenszwalb_segmentation = skimage.segmentation.felzenszwalb(
+            quadrant_labels,
+            scale=felzenszwalb_scale,
+            sigma=felzenszwalb_sigma,
+            min_size=felzenszwalb_min_size,
+            channel_axis=0,
+        )
 
     # k-means clustering
     cluster_model = sklearn.cluster.KMeans(n_clusters=n_clusters, init="k-means++", n_init=50)
@@ -121,7 +132,7 @@ def get_moran_felzenszwalb_segmentation(
     return moran_felzenszwalb_segmentation
 
 
-def get_neighbourhood_kernel(neighbourhood_type, neighbourhood_order):
+def get_neighbourhood_kernel(neighbourhood_type: NeighbourhoodType, neighbourhood_order: int):
     """
     Get a neighbourhood kernel for a given neighbourhood type and order.
 
@@ -138,19 +149,20 @@ def get_neighbourhood_kernel(neighbourhood_type, neighbourhood_order):
     w : np.ndarray of shape (2 * neighbourhood_order + 1, 2 * neighbourhood_order + 1)
         The neighbourhood kernel
     """
-    if neighbourhood_type.lower() == "queen":
+    neighbourhood_type = neighbourhood_type.lower()
+    if neighbourhood_type == "queen":
         w = np.ones((2 * neighbourhood_order + 1, 2 * neighbourhood_order + 1))
         w[neighbourhood_order, neighbourhood_order] = 0
         w /= w.sum()
 
-    elif neighbourhood_type.lower() == "rook":
+    elif neighbourhood_type == "rook":
         Y, X = np.ogrid[: 2 * neighbourhood_order + 1, : 2 * neighbourhood_order + 1]
         w = np.abs(X - neighbourhood_order) + np.abs(Y - neighbourhood_order) <= neighbourhood_order
         w[neighbourhood_order, neighbourhood_order] = 0
         w = w.astype(float)
         w /= w.sum()
 
-    elif neighbourhood_type.lower() == "radial":
+    elif neighbourhood_type == "radial":
         Y, X = np.ogrid[: 2 * neighbourhood_order + 1, : 2 * neighbourhood_order + 1]
         w = (X - neighbourhood_order) ** 2 + (Y - neighbourhood_order) ** 2 <= neighbourhood_order**2
         w[neighbourhood_order, neighbourhood_order] = 0

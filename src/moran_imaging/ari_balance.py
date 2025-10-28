@@ -126,7 +126,7 @@ def contingency_matrix(labels_true, labels_pred, *, reweigh=False, eps=None, spa
             # don't use += as contingency is integer
             contingency = contingency + eps
     # reweight contingency table if indicated
-    if reweigh is True:
+    if reweigh:
         contingency = contingency.astype(np.float64)
         counts_sum_per_class = np.ravel(contingency.sum(1))
         target = round(np.mean(counts_sum_per_class))

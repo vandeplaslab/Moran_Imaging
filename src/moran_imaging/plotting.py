@@ -92,7 +92,7 @@ def plot_moran_local_scatterplot(
 
     # Flatten ion image and perform mean-centering
     # Exclude background pixels from mean calculation if applicable
-    if remove_background is False:
+    if not remove_background:
         y = np.asarray(ion_image).flatten()
         y_mean = y.mean()
     else:
@@ -171,7 +171,7 @@ def plot_moran_local_scatterplot(
     fitline_kwds.setdefault("color", "k")
     scatter_kwds.setdefault("cmap", hmap)
 
-    if remove_background is False:
+    if not remove_background:
         scatter_kwds.setdefault("c", spots)
         image_scatter = axes.scatter(y, lag, **scatter_kwds)
         axes.plot(y_mean + y, mean_spatial_lag + slope * y, linewidth=2, **fitline_kwds)
@@ -184,7 +184,7 @@ def plot_moran_local_scatterplot(
         axes.plot(y_mean + y_no_background, mean_spatial_lag + slope * y_no_background, linewidth=2, **fitline_kwds)
 
     # Colorbar
-    if with_colorbar is True:
+    if with_colorbar:
         divider = make_axes_locatable(axes)
         cax = divider.append_axes("right", size="5%", pad=0.05)
         cbar = fig.colorbar(image_scatter, cax, ticks=tick_loc)

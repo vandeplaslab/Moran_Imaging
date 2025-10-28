@@ -92,7 +92,7 @@ class MoranLocal:
         # Assign each pixel to a quadrant of the Moran scatterplot
         self.quadrant = self._determine_scatterplot_quadrant(W, z, [1, 2, 3, 4])
 
-        if significance_test is True:
+        if significance_test:
             # Simulate spatial randomness by computing the local Moran's I statistics corresponding to random
             # permutations of the image
             # Numba-accelerated parallelized conditional randomization
@@ -244,7 +244,7 @@ class GearyGlobal:
                      Standardized global Geary's c statistics based on permutations.
     """
 
-    def __init__(self, y, W: SpatialWeightsMatrix, num_permute=999):
+    def __init__(self, y, W: SpatialWeightsMatrix, num_permute: int = 999):
         # Flatten and center the image
         y = np.asarray(y).flatten()
 

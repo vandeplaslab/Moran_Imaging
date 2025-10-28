@@ -19,8 +19,8 @@ def _astype_copy_false(X):
     {ndarray, csr_matrix, csc_matrix}.astype when possible,
     otherwise don't specify.
     """
-    from scipy import __version__
     from packaging.version import parse as parse_version
+    from scipy import __version__
 
     sp_version = parse_version(__version__)
 
@@ -29,8 +29,8 @@ def _astype_copy_false(X):
     return {}
 
 
-def _is_integral_float(y):
-    return y.dtype.kind == "f" and np.all(y.astype(int) == y)
+def _is_integral_float(y) -> bool:
+    return bool(y.dtype.kind == "f" and np.all(y.astype(int) == y))
 
 
 def check_consistent_length(*arrays):

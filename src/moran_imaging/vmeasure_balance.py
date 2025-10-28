@@ -73,7 +73,7 @@ def balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, *, bet
     # factor in the reweighting based on the true class frequencies.
     # These won't preserve order but this is fine since entropy is
     # invariant to order
-    if reweigh is True:
+    if reweigh:
         true_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis=1)))
         pred_sums = np.squeeze(np.asarray(sp.csc_matrix.sum(contingency, axis=0)))
         labels_true = np.repeat(np.arange(len(true_sums)), true_sums)

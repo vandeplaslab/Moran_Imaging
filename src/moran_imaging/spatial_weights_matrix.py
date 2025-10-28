@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import warnings
+from typing import TYPE_CHECKING
 
 import numpy as np
 import pandas
@@ -10,10 +11,13 @@ import scipy.sparse as sp
 from joblib import Parallel, delayed
 from scipy.sparse.csgraph import connected_components
 
+if TYPE_CHECKING:
+    from moran_imaging._typing import ContiguityType
+
 
 def define_spatial_weights_matrix(
     image_shape: tuple[int, int],
-    contiguity: str = "Queen",
+    contiguity: ContiguityType = "queen",
     neighbourhood_order: int = 1,
     background_mask: np.ndarray | None = None,
     with_lower_order: bool = False,
@@ -47,13 +51,14 @@ def define_spatial_weights_matrix(
     background_index = [] if len(background_mask) == 0 else np.argwhere(background_mask)[:, 0].tolist()
 
     # Define 1st order Queen or Rook contiguity matrix
-    if contiguity == "Queen":
+    contiguity = contiguity.lower()
+    if contiguity == "queen":
         W = define_lattice_spatial_weights_matrix(
-            image_shape[0], image_shape[1], contiguity="Queen", missing=background_index
+            image_shape[0], image_shape[1], contiguity="queen", missing=background_index
         )
-    elif contiguity == "Rook":
+    elif contiguity == "rook":
         W = define_lattice_spatial_weights_matrix(
-            image_shape[0], image_shape[1], contiguity="Rook", missing=background_index
+            image_shape[0], image_shape[1], contiguity="rook", missing=background_index
         )
 
     # Compute higher-order neighbourhood
@@ -64,7 +69,7 @@ def define_spatial_weights_matrix(
 
 
 def define_lattice_spatial_weights_matrix(
-    nrows: int, ncols: int, contiguity: str = "Queen", missing: list | None = None
+    nrows: int, ncols: int, contiguity: ContiguityType = "queen", missing: list | None = None
 ) -> SpatialWeightsMatrix:
     """
     Define a contiguity-based spatial weights matrix for a regular lattice.
@@ -79,7 +84,7 @@ def define_lattice_spatial_weights_matrix(
                  Number of rows in the lattice.
     ncols      : integer
                  Number of columns in the lattice.
-    contiguity : string
+    contiguity : ContiguityType
                  Type of contiguity. By default, Queen contiguity. Otherwise, Rook contiguity.
     missing    : list
                  Missing value indices to be excluded from the spatial weights matrix. By default, empty list.
@@ -136,7 +141,8 @@ def compute_neighbors(i: int, ncols: int, nrows: int, r1, c1, rid, cid, contigui
         neighbors.append(left)
 
     # Queen contiguity (corner neighbors)
-    if contiguity == "Queen":
+    contiguity = contiguity.lower()
+    if contiguity == "queen":
         if rid[i] < r1 and cid[i] < c1:  # bottom-right neighbor
             bottom_right = i + ncols + 1
             neighbors.append(bottom_right)
@@ -149,7 +155,6 @@ def compute_neighbors(i: int, ncols: int, nrows: int, r1, c1, rid, cid, contigui
         if rid[i] > 0 and cid[i] > 0:  # top-left neighbor
             top_left = i - ncols - 1
             neighbors.append(top_left)
-
     return neighbors
 
 

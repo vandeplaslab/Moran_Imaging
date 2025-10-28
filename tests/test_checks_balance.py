@@ -1,7 +1,9 @@
-from moran_imaging.checks_balance import _astype_copy_false, _is_integral_float, check_consistent_length, is_multilabel
 import numpy as np
-from scipy import sparse as sp
 import pytest
+from scipy import sparse as sp
+
+from moran_imaging.checks_balance import _astype_copy_false, _is_integral_float, check_consistent_length, is_multilabel
+
 
 def test_astype_copy_false():
     # Test with dense array
@@ -18,15 +20,15 @@ def test_astype_copy_false():
 def test_is_integral_float():
     # Test with integral float array
     y_integral = np.array([1.0, 2.0, 3.0])
-    assert _is_integral_float(y_integral) == True
+    assert _is_integral_float(y_integral) is True
 
     # Test with non-integral float array
     y_non_integral = np.array([1.0, 2.5, 3.0])
-    assert _is_integral_float(y_non_integral) == False
+    assert _is_integral_float(y_non_integral) is False
 
     # Test with integer array
     y_integer = np.array([1, 2, 3])
-    assert _is_integral_float(y_integer) == False
+    assert _is_integral_float(y_integer) is False
 
 
 def test_check_consistent_length():
@@ -43,8 +45,8 @@ def test_check_consistent_length():
 def test_is_multilabel():
     # Test with multilabel indicator matrix
     y_multilabel = np.array([[1, 0, 1], [0, 1, 0], [1, 1, 0]])
-    assert is_multilabel(y_multilabel) == True
+    assert is_multilabel(y_multilabel) is True
 
     # Test with single label array
     y_singlelabel = np.array([1, 1, 1])
-    assert is_multilabel(y_singlelabel) == False
+    assert is_multilabel(y_singlelabel) is False

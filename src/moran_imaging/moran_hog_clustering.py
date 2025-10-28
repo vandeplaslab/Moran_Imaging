@@ -24,8 +24,8 @@ class MHSClustering:
 
     def __init__(
         self,
-        dataset,
-        acquisition_mask,
+        dataset: np.ndarray,
+        acquisition_mask: np.ndarray,
         image_shape: tuple[int, int],
         neighborhood_size: int = 5,
         hog_orientations: int = 8,
@@ -43,7 +43,7 @@ class MHSClustering:
         # Define the spatial weights matrix
         background_mask = np.invert(acquisition_mask)
         weights_matrix = define_spatial_weights_matrix(
-            image_shape, "Queen", neighborhood_size, background_mask, with_lower_order=True
+            image_shape, "queen", neighborhood_size, background_mask, with_lower_order=True
         )
         weights_matrix.transform = "r"
 
@@ -63,7 +63,7 @@ class MHSClustering:
         self.Moran_quadrants = moran_quadrants
 
         # Compute the Histogram of Oriented Gradients (HOG)
-        if hog_visualize is True:
+        if hog_visualize:
             self.Moran_quadrants_HOG_features, self.Moran_quadrants_HOG_images = self.extract_hog_features(
                 moran_quadrants
             )
