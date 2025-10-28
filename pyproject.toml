@@ -89,7 +89,7 @@ write_to = "src/moran_imaging/_version.py"
 # https://github.com/charliermarsh/ruff
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py310"
 src = ["src"]
 # https://beta.ruff.rs/docs/rules/
 

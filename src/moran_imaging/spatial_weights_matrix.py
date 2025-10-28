@@ -186,13 +186,13 @@ def define_higher_order_spatial_weights(w, k: int, lower_order: bool) -> Spatial
         wk = w**k
 
     rk, ck = wk.nonzero()
-    sk = set(zip(rk, ck))
+    sk = set(zip(rk, ck, strict=False))
 
     if shortest_path:
         for j in range(1, k):
             wj = w**j
             rj, cj = wj.nonzero()
-            sj = set(zip(rj, cj))
+            sj = set(zip(rj, cj, strict=False))
             sk.difference_update(sj)
 
     sk = {(i, j) for i, j in sk if i != j}
@@ -590,18 +590,18 @@ class SpatialWeightsMatrix:
                 list(self.cardinalities.values()),
                 list(range(self.min_neighbors, self.max_neighbors + 2)),
             )
-            self._histogram = list(zip(bin, ct))
+            self._histogram = list(zip(bin, ct, strict=False))
             self._cache["histogram"] = self._histogram
         return self._histogram
 
     def __getitem__(self, key):
         """Allow a dictionary like interaction with the weights class."""
-        return dict(list(zip(self.neighbors[key], self.weights[key])))
+        return dict(list(zip(self.neighbors[key], self.weights[key], strict=False)))
 
     def __iter__(self):
         """Support iteration over weights."""
         for i in self._id_order:
-            yield i, dict(list(zip(self.neighbors[i], self.weights[i])))
+            yield i, dict(list(zip(self.neighbors[i], self.weights[i], strict=False)))
 
     def remap_ids(self, new_ids):
         """
@@ -623,7 +623,7 @@ class SpatialWeightsMatrix:
             new_weights = {}
             old_transformations = self.transformations["O"].copy()
             new_transformations = {}
-            for o, n in zip(old_ids, new_ids):
+            for o, n in zip(old_ids, new_ids, strict=False):
                 o_neighbors = self.neighbors[o]
                 o_weights = self.weights[o]
                 n_neighbors = [new_ids[old_ids.index(j)] for j in o_neighbors]
@@ -805,7 +805,7 @@ class SpatialWeightsMatrix:
         ids = np.nonzero(wd)
         if len(ids[0]) == 0:
             return []
-        ijs = list(zip(ids[0], ids[1]))
+        ijs = list(zip(ids[0], ids[1], strict=False))
         ijs.sort()
         return ijs
 

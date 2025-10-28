@@ -505,7 +505,7 @@ def parallel_crand(
         worker_out = Parallel(n_jobs=n_jobs)(
             delayed(compute_chunk)(*pars, permuted_ids, scaling, keep, stat_func, island_weight) for pars in chunks
         )
-    larger, rlocals = zip(*worker_out)
+    larger, rlocals = zip(*worker_out, strict=False)
     larger = np.hstack(larger).squeeze()
     rlocals = np.vstack(rlocals).squeeze()
     return larger, rlocals

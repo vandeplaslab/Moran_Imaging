@@ -94,7 +94,7 @@ def is_multilabel(y):
         return False
 
     if sp.issparse(y):
-        if isinstance(y, (sp.dok_matrix, sp.lil_matrix)):
+        if isinstance(y, sp.dok_matrix | sp.lil_matrix):
             y = y.tocsr()
         return (
             len(y.data) == 0
@@ -400,7 +400,7 @@ def _ensure_sparse_format(spmatrix, accept_sparse, dtype, copy, force_all_finite
             "data is required. Use X.toarray() to "
             "convert to a dense numpy array."
         )
-    elif isinstance(accept_sparse, (list, tuple)):
+    elif isinstance(accept_sparse, list | tuple):
         if len(accept_sparse) == 0:
             raise ValueError(
                 "When providing 'accept_sparse' " "as a tuple or list, it must contain at " "least one string value."
@@ -610,16 +610,14 @@ def check_array(
 
                     if isinstance(
                         dtype_iter,
-                        (
-                            Int8Dtype,
-                            Int16Dtype,
-                            Int32Dtype,
-                            Int64Dtype,
-                            UInt8Dtype,
-                            UInt16Dtype,
-                            UInt32Dtype,
-                            UInt64Dtype,
-                        ),
+                        Int8Dtype
+                        | Int16Dtype
+                        | Int32Dtype
+                        | Int64Dtype
+                        | UInt8Dtype
+                        | UInt16Dtype
+                        | UInt32Dtype
+                        | UInt64Dtype,
                     ):
                         has_pd_integer_array = True
 
@@ -633,7 +631,7 @@ def check_array(
         else:
             dtype = None
 
-    if isinstance(dtype, (list, tuple)):
+    if isinstance(dtype, list | tuple):
         if dtype_orig is not None and dtype_orig in dtype:
             # no dtype conversion required
             dtype = None

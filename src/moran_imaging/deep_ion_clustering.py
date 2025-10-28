@@ -9,7 +9,7 @@
 # Original code by Lei Guo: https://github.com/gankLei-X/DeepION/tree/main
 # Our code is adapted from Lei Guo
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 import numpy as np
 import torch
@@ -31,12 +31,12 @@ class RandomMissing(IntensityAugmentationBase2D):
     ) -> None:
         super().__init__(p=p, same_on_batch=same_on_batch, p_batch=1.0, keepdim=keepdim)
 
-    def generate_parameters(self, shape: torch.Size) -> Dict[str, Tensor]:
+    def generate_parameters(self, shape: torch.Size) -> dict[str, Tensor]:
         noise = torch.randn(shape)
         return {"noise": noise}
 
     def apply_transform(
-        self, input: Tensor, params: Dict[str, Tensor], flags: Dict[str, Any], transform: Optional[Tensor] = None
+        self, input: Tensor, params: dict[str, Tensor], flags: dict[str, Any], transform: Tensor | None = None
     ) -> Tensor:
         s, _, m, n = input.shape
 
