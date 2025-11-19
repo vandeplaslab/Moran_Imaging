@@ -10,7 +10,7 @@ The Moran Imaging Python package was developed for the spatio-molecular analysis
 
 ### Installation
 
-You can install Moran Imaging, with its mandatory dependencies, from PyPI. Our package supports Python version 3.9 and above. It has been tested on Windows and Linux. The necessary dependencies are listed in pyproject.toml. 
+You can install Moran Imaging, with its mandatory dependencies, from PyPI. Our package supports Python version 3.9 and above. It has been tested on Windows and Linux. The necessary dependencies are listed in pyproject.toml. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
 
 ```bash
 pip install Moran_Imaging[demo]
@@ -25,7 +25,7 @@ Zenodo link: https://zenodo.org/records/17399931
 
 The paper corresponding to the Moran Imaging Python package is "Spatial Dependence and Heterogeneity in Molecular Imaging: Moran Quadrant Maps Enable Advanced Spatial-Statistical Analysis" by Léonore Tideman, Felipe Moser, Lukasz Migas, Jacquelyn Spathies, Katerina  Djambazova, Cody Marshall, Matthew Schrag, Eric Skaar, Jeffrey Spraggins, Raf Van de Plas (October 2025). Download the tutorial notebooks from GitHub, open the JupyterLab interactive development environment, and run the following notebooks to reproduce our results. 
 
-Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. Please note that automatic parallelization with the `numba` @jit decorator is only available on 64-bit platforms.
+Run the following notebook to reproduce Figures 1 and 2 of the main manuscipt, and Figures 9 and 10 of the supplementary material. We demonstrate how to quantify spatial dependence and spatial heterogeneity, and how to compute the Moran quadrant map of an image. 
 
         jupyter lab Exploratory_spatial_data_analysis.ipynb 
 
