@@ -18,14 +18,15 @@ from moran_imaging.cae import CAE
 from moran_imaging.cnn_clustering import CNNClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
 from moran_imaging._torch import get_backend
+from tqdm import trange
 
 
 
 class DeepClustering:
     def __init__(
         self,
-        ims_dataset,
-        acquisition_mask,
+        ims_dataset: np.ndarray,
+        acquisition_mask: np.ndarray,
         image_shape: tuple[int, int],
         num_cluster: int=5,
         label_path=None,
@@ -35,6 +36,7 @@ class DeepClustering:
         k: int=10,
         use_gpu: bool | str="auto",
         random_seed: int=0,
+        silent: bool=False,
     ):
         super().__init__()
 
@@ -51,6 +53,7 @@ class DeepClustering:
         if use_gpu == "auto":
             use_gpu = torch.cuda.is_available()
         self.use_gpu = use_gpu
+        self.silent = silent
         self.image_label = None
 
         self.random_seed = random_seed
@@ -113,9 +116,9 @@ class DeepClustering:
             torch.backends.cudnn.deterministic = True
 
         # Pretraining of CAE only
-        for _epoch in range(0, 11):
+        for _epoch in trange(0, 11, disable=self.silent, desc="Pretraining CAE...", unit="epoch"):
             losses = []
-            for _it in range(501):
+            for _it in trange(501, disable=self.silent, desc="Iterations...", unit="it", leave=False):
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
@@ -131,7 +134,7 @@ class DeepClustering:
         optimizer = torch.optim.RMSprop(params=model_params, lr=0.01, weight_decay=0.0)
 
         # Full model training
-        for _epoch in range(0, 11):
+        for _epoch in trange(0, 11, disable=self.silent, desc="Training NRDC...", unit="epoch"):
             losses = []
             losses2 = []
 
@@ -149,7 +152,7 @@ class DeepClustering:
             # Similarity as defined in formula 2 of the paper
             sim_mat = torch.matmul(features, torch.transpose(features, 0, 1))
 
-            for _it in range(31):
+            for _it in trange(31, disable=self.silent, desc="Iterations...", unit="it", leave=False):
                 train_x, train_y, index = self.get_batch(self.image_data, self.batch_size, train_label=self.image_label)
 
                 train_x = torch.Tensor(train_x).to(self.device)
