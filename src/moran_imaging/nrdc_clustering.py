@@ -6,6 +6,7 @@
 # Original code by Dan Guo: https://github.com/DanGuo1223/mzClustering
 # Improved code by Tim Daniel Rose: https://github.com/tdrose/deep_mzClustering
 # Our code is adapted from Tim Daniel Rose
+from __future__ import annotations
 
 from random import sample
 
@@ -16,6 +17,8 @@ import torch.nn.functional as functional
 from moran_imaging.cae import CAE
 from moran_imaging.cnn_clustering import CNNClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
+from moran_imaging._torch import get_backend
+
 
 
 class DeepClustering:
@@ -23,15 +26,15 @@ class DeepClustering:
         self,
         ims_dataset,
         acquisition_mask,
-        image_shape,
-        num_cluster=5,
+        image_shape: tuple[int, int],
+        num_cluster: int=5,
         label_path=None,
-        lr=0.0001,
-        batch_size=128,
-        knn=True,
-        k=10,
-        use_gpu=True,
-        random_seed=0,
+        lr: float=0.0001,
+        batch_size: int=128,
+        knn: bool=True,
+        k: int=10,
+        use_gpu: bool | str="auto",
+        random_seed: int=0,
     ):
         super().__init__()
 
@@ -45,11 +48,13 @@ class DeepClustering:
         self.k = k
         self.knn_adj = None
         self.loss_func = torch.nn.MSELoss()
+        if use_gpu == "auto":
+            use_gpu = torch.cuda.is_available()
         self.use_gpu = use_gpu
         self.image_label = None
 
         self.random_seed = random_seed
-        self.device = torch.device("cuda" if use_gpu else "cpu")
+        self.device = torch.device("cuda" if use_gpu else get_backend())
 
         # Reshaping vectorized images
         images = []

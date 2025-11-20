@@ -18,7 +18,9 @@ from byol_pytorch import BYOL
 from kornia.augmentation import ColorJitter, IntensityAugmentationBase2D, RandomBoxBlur
 from sklearn.preprocessing import MinMaxScaler
 from torch import Tensor
-from torchvision.models import resnet18
+from torchvision.models import resnet18, ResNet18_Weights
+from tqdm import trange
+from moran_imaging._torch import to_backend
 
 
 class RandomMissing(IntensityAugmentationBase2D):
@@ -74,32 +76,28 @@ def img2tensor(img):
             transforms.Resize((256, 256)),
         ]
     )
-
     # Apply transformation batch-wise
     img = transform(img)
-
     # Move to GPU
-    img = img.cuda()
-
-    return img
+    return to_backend(img)
 
 
-def DeepION_training(input_filename, image_size, mode):
+def DeepION_training(input_filename, image_size, mode, mini_batch: int = 100, n_epoch: int = 200):
     oridata = np.loadtxt(input_filename)
-
     oridata = oridata / np.sum(oridata, axis=0).reshape(1, -1)[0]
     data = MinMaxScaler().fit_transform(oridata)
 
-    resnet = resnet18(pretrained=True).cuda()
+    resnet = to_backend(resnet18(weights=ResNet18_Weights.IMAGENET1K_V1))
 
+    argument_fn, argument_fn2 = None, None
     if mode == "COL":
-        argument_fn = torch.nn.Sequential(
+        argument_fn = to_backend(torch.nn.Sequential(
             ColorJitter(0.8, 0.8, 0, p=1), RandomBoxBlur((5, 5), p=0.5), RandomMissing(p=1)
-        )
+        ))
 
-        argument_fn2 = torch.nn.Sequential(
+        argument_fn2 = to_backend(torch.nn.Sequential(
             ColorJitter(0.8, 0.8, 0, p=1), RandomBoxBlur((5, 5), p=0.5), RandomMissing(p=1)
-        )
+        ))
 
     # learner = BYOL(resnet, image_size=image_size, hidden_layer='avgpool',
     #               augment_fn=argument_fn, augment_fn2=argument_fn2)
@@ -108,10 +106,8 @@ def DeepION_training(input_filename, image_size, mode):
 
     opt = torch.optim.Adam(learner.parameters(), lr=3e-4)
 
-    mini_batch = 100
     num = len(data[0])
-
-    for _epoch in range(200):
+    for _epoch in trange(n_epoch):
         index = np.arange(len(data[0]))
         np.random.shuffle(index)
         data = data[:, index]
@@ -122,7 +118,8 @@ def DeepION_training(input_filename, image_size, mode):
             image_array = image_array.reshape(image_size[0], image_size[1], mini_batch, 1)
             image_array = np.concatenate([image_array, image_array, image_array], axis=3)
             image_tensor = img2tensor(image_array)
-            loss = learner(image_tensor)
+            print(image_tensor.shape, image_tensor.is_contiguous())
+            loss = learner(image_tensor.contiguous() if not image_tensor.is_contiguous() else image_tensor)
             opt.zero_grad()
             loss.backward()
             opt.step()
@@ -132,7 +129,7 @@ def DeepION_training(input_filename, image_size, mode):
 
         image_array = np.concatenate((image_array[-mini_batch:], image_array[-mini_batch:]), axis=0)
         image_tensor = img2tensor(image_array)
-        images = image_tensor.cuda()
+        images = to_backend(image_tensor)
         loss = learner(images)
         opt.zero_grad()
         loss.backward()
