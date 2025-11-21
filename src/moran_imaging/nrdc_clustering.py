@@ -13,13 +13,12 @@ from random import sample
 import numpy as np
 import torch
 import torch.nn.functional as functional
+from tqdm import trange
 
+from moran_imaging._torch import get_backend
 from moran_imaging.cae import CAE
 from moran_imaging.cnn_clustering import CNNClust
 from moran_imaging.pseudo_labeling import pseudo_labeling, run_knn
-from moran_imaging._torch import get_backend
-from tqdm import trange
-
 
 
 class DeepClustering:
@@ -28,15 +27,15 @@ class DeepClustering:
         ims_dataset: np.ndarray,
         acquisition_mask: np.ndarray,
         image_shape: tuple[int, int],
-        num_cluster: int=5,
+        num_cluster: int = 5,
         label_path=None,
-        lr: float=0.0001,
-        batch_size: int=128,
-        knn: bool=True,
-        k: int=10,
-        use_gpu: bool | str="auto",
-        random_seed: int=0,
-        silent: bool=False,
+        lr: float = 0.0001,
+        batch_size: int = 128,
+        knn: bool = True,
+        k: int = 10,
+        use_gpu: bool | str = "auto",
+        random_seed: int = 0,
+        silent: bool = False,
     ):
         super().__init__()
 

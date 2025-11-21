@@ -111,3 +111,4 @@ tutorials/Data
 tutorials/Results
 *.pickle
 *.h5
+*.pth
