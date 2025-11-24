@@ -35,6 +35,7 @@ def _is_integral_float(y) -> bool:
 
 def check_consistent_length(*arrays):
     """Check that all arrays have consistent first dimensions.
+
     Checks whether all objects in arrays have the same shape or length.
 
     Parameters.

@@ -71,7 +71,7 @@ def define_lattice_spatial_weights_matrix(
     nrows: int, ncols: int, contiguity: ContiguityType = "queen", missing: list | None = None
 ) -> SpatialWeightsMatrix:
     """Define a contiguity-based spatial weights matrix for a regular lattice.
-    
+
     Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W
     & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
     Observations are row ordered (first ncols observations are in row 0, next ncols in row 1, next ncols in row 2,
@@ -313,7 +313,7 @@ class SpatialWeightsMatrix:
                     ni,
                     ", ".join(str(island) for island in self.islands),
                 )
-            warnings.warn(message)
+            warnings.warn(message, stacklevel=2)
 
     def _reset(self) -> None:
         """Reset properties."""

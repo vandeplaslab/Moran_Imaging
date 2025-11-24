@@ -21,9 +21,7 @@ __all__ = ["crand"]
 
 @njit(fastmath=True)
 def vec_permutations(max_card: int, n: int, k_replications: int, seed: int):
-    """
-    Generate max_card permuted IDs, sampled from n without replacement, k_replications times
-    ...
+    """Generate max_card permuted IDs, sampled from n without replacement, k_replications times.
 
     Parameters
     ----------
@@ -60,10 +58,9 @@ def crand(
     seed: int | None = None,
     island_weight=0,
 ):
-    """
-    Conduct conditional randomization of a given input using the provided statistic function.
+    """Conduct conditional randomization of a given input using the provided statistic function.
+
     Numba accelerated.
-    ...
 
     Parameters
     ----------
@@ -205,9 +202,7 @@ def compute_chunk(
     stat_func,
     island_weight: float,
 ):
-    """
-    Compute conditional randomisation for a single chunk.
-    ...
+    """Compute conditional randomisation for a single chunk.
 
     Parameters
     ----------
@@ -302,10 +297,7 @@ def compute_chunk(
 
 @njit(fastmath=True)
 def build_weights_offsets(cardinalities: np.ndarray, n_chunks: int) -> np.ndarray:
-    """
-    Utility function to construct offsets into the weights
-    flat data array found in the W.sparse.data object
-    ...
+    """Utility function to construct offsets into the weights flat data array found in the W.sparse.data object.
 
     Parameters
     ----------
@@ -342,9 +334,7 @@ def chunk_generator(
     other_weights: np.ndarray,
     w_boundary_points: np.ndarray,
 ):
-    """
-    Construct chunks to iterate over within numba in parallel
-    ...
+    """Construct chunks to iterate over within numba in parallel.
 
     Parameters
     ----------
@@ -416,9 +406,7 @@ def parallel_crand(
     stat_func,
     island_weight,
 ):
-    """
-    Conduct conditional randomization in parallel using numba
-    ...
+    """Conduct conditional randomization in parallel using numba.
 
     Parameters
     ----------

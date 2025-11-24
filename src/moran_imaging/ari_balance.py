@@ -11,6 +11,7 @@ from sklearn.utils import sparsefuncs
 
 def balanced_adjusted_rand_index(labels_true, labels_pred, reweigh=True):
     """Rand index adjusted for chance and balanced across true labels.
+
     The Rand Index computes a similarity measure between two clusterings
     by considering all pairs of samples and counting pairs that are
     assigned in the same or different clusters in the predicted and
@@ -138,6 +139,7 @@ def contingency_matrix(labels_true, labels_pred, *, reweigh=False, eps=None, spa
 
 def pair_confusion_matrix(labels_true, labels_pred, reweigh=False):
     """Pair confusion matrix arising from two clusterings.
+
     The pair confusion matrix :math:`C` computes a 2 by 2 similarity matrix
     between two clusterings by considering all pairs of samples and counting
     pairs that are assigned into the same or into different clusters under
