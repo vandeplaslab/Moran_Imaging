@@ -22,8 +22,7 @@ def define_spatial_weights_matrix(
     background_mask: np.ndarray | None = None,
     with_lower_order: bool = False,
 ):
-    """
-    Define a Queen or Rook spatial weights contiguity matrix.
+    """Define a Queen or Rook spatial weights contiguity matrix.
 
     Inputs
     ----------
@@ -71,8 +70,8 @@ def define_spatial_weights_matrix(
 def define_lattice_spatial_weights_matrix(
     nrows: int, ncols: int, contiguity: ContiguityType = "queen", missing: list | None = None
 ) -> SpatialWeightsMatrix:
-    """
-    Define a contiguity-based spatial weights matrix for a regular lattice.
+    """Define a contiguity-based spatial weights matrix for a regular lattice.
+    
     Code adapted from https://pysal.org/libpysal/_modules/libpysal/weights/util.html#lat2W
     & https://pysal.org/libpysal/_modules/libpysal/weights/weights.html#W
     Observations are row ordered (first ncols observations are in row 0, next ncols in row 1, next ncols in row 2,

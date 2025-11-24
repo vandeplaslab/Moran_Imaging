@@ -13,6 +13,7 @@ from moran_imaging.utils_balance import contingency_matrix, entropy, mutual_info
 
 def balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
     """Compute balanced the homogeneity, completeness, and V-Measure scores.
+
     Those metrics are based on normalized conditional entropy measures of
     the clustering labeling to evaluate given the knowledge of a Ground
     Truth class labels of the same samples.
@@ -95,6 +96,7 @@ def balanced_homogeneity_completeness_v_measure(labels_true, labels_pred, *, bet
 
 def balanced_homogeneity(labels_true, labels_pred, reweigh=True):
     """Class balanced homogeneity metric of a cluster labeling given a ground truth.
+
     A clustering result satisfies homogeneity if all of its clusters
     contain only data points which are members of a single class.
     This metric is independent of the absolute values of the labels:
@@ -135,6 +137,7 @@ def balanced_homogeneity(labels_true, labels_pred, reweigh=True):
 
 def balanced_completeness(labels_true, labels_pred, reweigh=True):
     """Class balanced Completeness metric of a cluster labeling given a ground truth.
+
     A clustering result satisfies completeness if all the data points
     that are members of a given class are elements of the same cluster.
     This metric is independent of the absolute values of the labels:
@@ -175,6 +178,7 @@ def balanced_completeness(labels_true, labels_pred, reweigh=True):
 
 def balanced_v_measure(labels_true, labels_pred, *, beta=1.0, reweigh=True):
     """Class balanced V-measure cluster labeling given a ground truth.
+
     The V-measure is the harmonic mean between homogeneity and completeness::
         v = (1 + beta) * homogeneity * completeness
              / (beta * homogeneity + completeness)
